@@ -6,7 +6,7 @@ import {
   useTerminalTyping,
   type TerminalStep,
 } from '@/shared/hooks/useTerminalTyping'
-import { navItems } from './navigation'
+import { filterNavByRole, navItems } from './navigation'
 
 const MONO =
   "'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace"
@@ -38,7 +38,7 @@ const SIDEBAR_TERMINAL_STEPS: TerminalStep[] = [
 
 const useStyles = makeStyles({
   sidebar: {
-    width: '268px',
+    width: '240px',
     flexShrink: 0,
     position: 'sticky',
     top: 0,
@@ -366,7 +366,7 @@ export function Sidebar() {
 
         <div className={styles.sectionLabel}>// navegación</div>
         <nav className={styles.nav}>
-          {navItems.map((item) => {
+          {filterNavByRole(navItems, user?.role).map((item) => {
             const Icon = item.icon
             return (
               <NavLink

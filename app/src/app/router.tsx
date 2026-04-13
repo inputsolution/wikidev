@@ -1,7 +1,9 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { AppLayout } from '@/shared/layout/AppLayout'
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute'
+import { RoleGuard } from '@/features/auth/components/RoleGuard'
 import { LoginPage } from '@/features/auth/components/LoginPage'
+import { ForbiddenPage } from '@/features/auth/components/ForbiddenPage'
 import { DashboardPage } from '@/features/dashboard/DashboardPage'
 import { ProjectsPage } from '@/features/projects/ProjectsPage'
 import { ProjectDetailPage } from '@/features/projects/ProjectDetailPage'
@@ -30,7 +32,15 @@ export const router = createBrowserRouter([
       { path: 'integraciones', element: <IntegrationsPage /> },
       { path: 'comentarios', element: <CommentsPage /> },
       { path: 'adjuntos', element: <AttachmentsPage /> },
-      { path: 'administracion', element: <AdministrationPage /> },
+      {
+        path: 'administracion',
+        element: (
+          <RoleGuard allowed={['admin']}>
+            <AdministrationPage />
+          </RoleGuard>
+        ),
+      },
+      { path: 'forbidden', element: <ForbiddenPage /> },
     ],
   },
   { path: '*', element: <Navigate to="/" replace /> },

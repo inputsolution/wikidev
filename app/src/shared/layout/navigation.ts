@@ -1,4 +1,5 @@
 import type { FC } from 'react'
+import type { UserRole } from '@/features/auth/types'
 import {
   Board20Regular,
   Board20Filled,
@@ -25,6 +26,7 @@ export interface NavItem {
   label: string
   path: string
   icon: FC<{ className?: string }> | FluentIcon
+  allowedRoles?: UserRole[]
 }
 
 const Dashboard = bundleIcon(Board20Filled, Board20Regular)
@@ -44,5 +46,15 @@ export const navItems: NavItem[] = [
   { key: 'integrations', label: 'Integraciones', path: '/integraciones', icon: Integrations },
   { key: 'comments', label: 'Comentarios', path: '/comentarios', icon: Comments },
   { key: 'attachments', label: 'Adjuntos', path: '/adjuntos', icon: Attachments },
-  { key: 'administration', label: 'Administración', path: '/administracion', icon: Administration },
+  {
+    key: 'administration',
+    label: 'Administración',
+    path: '/administracion',
+    icon: Administration,
+    allowedRoles: ['admin'],
+  },
 ]
+
+export function filterNavByRole(items: NavItem[], role?: UserRole): NavItem[] {
+  return items.filter((item) => !item.allowedRoles || (role && item.allowedRoles.includes(role)))
+}
