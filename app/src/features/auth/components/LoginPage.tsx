@@ -58,12 +58,57 @@ const useStyles = makeStyles({
     lineHeight: 1.55,
     color: 'rgba(189, 241, 248, 0.12)',
     padding: '48px 56px',
-    whiteSpace: 'pre',
     userSelect: 'none',
     overflow: 'hidden',
     maskImage: 'linear-gradient(180deg, transparent 0%, #000 12%, #000 75%, transparent 100%)',
     WebkitMaskImage:
       'linear-gradient(180deg, transparent 0%, #000 12%, #000 75%, transparent 100%)',
+  },
+  codeScroller: {
+    whiteSpace: 'pre',
+    willChange: 'transform',
+    animationName: {
+      from: { transform: 'translate3d(0, 0, 0)' },
+      to: { transform: 'translate3d(0, -50%, 0)' },
+    },
+    animationDuration: '90s',
+    animationTimingFunction: 'linear',
+    animationIterationCount: 'infinite',
+    '@media (prefers-reduced-motion: reduce)': {
+      animationName: 'none',
+    },
+  },
+  cursorLine: {
+    position: 'absolute',
+    left: '56px',
+    bottom: '80px',
+    fontFamily: MONO_STACK,
+    fontSize: '12px',
+    color: 'rgba(189, 241, 248, 0.45)',
+    pointerEvents: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '2px',
+    zIndex: 0,
+  },
+  cursor: {
+    display: 'inline-block',
+    width: '7px',
+    height: '13px',
+    backgroundColor: '#7DDFEE',
+    marginLeft: '4px',
+    boxShadow: '0 0 10px rgba(125, 223, 238, 0.7)',
+    animationName: {
+      '0%, 49%': { opacity: 1 },
+      '50%, 100%': { opacity: 0 },
+    },
+    animationDuration: '1.1s',
+    animationTimingFunction: 'steps(1, end)',
+    animationIterationCount: 'infinite',
+    '@media (prefers-reduced-motion: reduce)': {
+      animationName: 'none',
+      opacity: 1,
+    },
   },
   gridOverlay: {
     position: 'absolute',
@@ -389,9 +434,16 @@ export function LoginPage() {
     <div className={styles.page}>
       <aside className={styles.brandPanel}>
         <div className={styles.gridOverlay} aria-hidden />
-        <pre className={styles.codeBackdrop} aria-hidden>
-          {CODE_BACKDROP}
-        </pre>
+        <div className={styles.codeBackdrop} aria-hidden>
+          <div className={styles.codeScroller}>
+            {CODE_BACKDROP}
+            {CODE_BACKDROP}
+          </div>
+        </div>
+        <div className={styles.cursorLine} aria-hidden>
+          <span>$&nbsp;</span>
+          <span className={styles.cursor} />
+        </div>
 
         <div className={styles.brandContent}>
           <div className={styles.brandHeader}>
