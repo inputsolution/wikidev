@@ -214,7 +214,6 @@ const useStyles = makeStyles({
       borderRightColor: tokens.colorBrandStroke1,
       borderBottomColor: tokens.colorBrandStroke1,
       borderLeftColor: tokens.colorBrandStroke1,
-      boxShadow: '0 0 0 3px rgba(3, 149, 169, 0.12)',
     },
   },
   row: {

@@ -334,8 +334,7 @@ const useStyles = makeStyles({
     backgroundColor: '#FFFFFF',
     borderRadius: '18px',
     border: `1px solid ${tokens.colorNeutralStroke2}`,
-    boxShadow:
-      '0 12px 32px rgba(3, 149, 169, 0.18), 0 2px 6px rgba(15, 23, 42, 0.06)',
+    boxShadow: '0 8px 20px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.05)',
   },
   formBrandName: {
     fontSize: '20px',
@@ -403,7 +402,6 @@ const useStyles = makeStyles({
       borderRightColor: tokens.colorBrandStroke1,
       borderBottomColor: tokens.colorBrandStroke1,
       borderLeftColor: tokens.colorBrandStroke1,
-      boxShadow: '0 0 0 4px rgba(3, 149, 169, 0.12), 0 1px 2px rgba(15, 23, 42, 0.05)',
     },
   },
   passwordToggle: {
@@ -425,17 +423,14 @@ const useStyles = makeStyles({
     borderRadius: '10px',
     fontWeight: 600,
     marginTop: '6px',
-    boxShadow: '0 8px 20px rgba(3, 149, 169, 0.28), 0 1px 2px rgba(3, 149, 169, 0.18)',
-    transition: 'transform 120ms ease, box-shadow 180ms ease',
+    transition: 'transform 120ms ease',
     ':hover': {
-      boxShadow: '0 12px 28px rgba(3, 149, 169, 0.35), 0 1px 2px rgba(3, 149, 169, 0.18)',
       transform: 'translateY(-1px)',
     },
     ':active': {
       transform: 'translateY(0)',
     },
     ':disabled': {
-      boxShadow: 'none',
       transform: 'none',
     },
   },
@@ -476,7 +471,7 @@ export function LoginPage() {
   const { login, status, error } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const [email, setEmail] = useState('admin@wikidev.local')
+  const [email, setEmail] = useState('jeheredia@bancoademi.com.do')
   const [password, setPassword] = useState('admin123')
   const [showPassword, setShowPassword] = useState(false)
   const terminal = useTerminalTyping(TERMINAL_STEPS)

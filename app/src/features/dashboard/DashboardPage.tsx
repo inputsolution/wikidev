@@ -93,7 +93,7 @@ const useStyles = makeStyles({
       borderRightColor: tokens.colorBrandStroke2,
       borderBottomColor: tokens.colorBrandStroke2,
       borderLeftColor: tokens.colorBrandStroke2,
-      boxShadow: '0 8px 24px rgba(3, 149, 169, 0.08)',
+      boxShadow: '0 4px 14px rgba(15, 23, 42, 0.05)',
       transform: 'translateY(-1px)',
     },
   },
