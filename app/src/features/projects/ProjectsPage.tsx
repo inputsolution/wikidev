@@ -20,7 +20,8 @@ import {
 } from '@fluentui/react-icons'
 import { PageHeader } from '@/shared/components/PageHeader'
 import { mockProjects } from './mockData'
-import type { ProjectStatus } from './types'
+import type { Project, ProjectStatus } from './types'
+import { NewProjectDrawer } from './NewProjectDrawer'
 
 const MONO =
   "'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace"
@@ -66,7 +67,6 @@ const useStyles = makeStyles({
       borderRightColor: tokens.colorBrandStroke1,
       borderBottomColor: tokens.colorBrandStroke1,
       borderLeftColor: tokens.colorBrandStroke1,
-      boxShadow: '0 0 0 4px rgba(3, 149, 169, 0.12), 0 1px 2px rgba(15, 23, 42, 0.05)',
       backgroundColor: tokens.colorNeutralBackground1,
     },
     '> input': {
@@ -109,7 +109,7 @@ const useStyles = makeStyles({
     transition: 'transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease',
     ':hover': {
       transform: 'translateY(-2px)',
-      boxShadow: '0 12px 32px rgba(3, 149, 169, 0.10), 0 2px 6px rgba(15, 23, 42, 0.05)',
+      boxShadow: '0 6px 18px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04)',
       borderTopColor: tokens.colorBrandStroke2,
       borderRightColor: tokens.colorBrandStroke2,
       borderBottomColor: tokens.colorBrandStroke2,
@@ -203,17 +203,23 @@ function statusBadge(status: ProjectStatus) {
 export function ProjectsPage() {
   const styles = useStyles()
   const [query, setQuery] = useState('')
+  const [projects, setProjects] = useState<Project[]>(mockProjects)
+  const [drawerOpen, setDrawerOpen] = useState(false)
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
-    if (!q) return mockProjects
-    return mockProjects.filter(
+    if (!q) return projects
+    return projects.filter(
       (p) =>
         p.name.toLowerCase().includes(q) ||
         p.code.toLowerCase().includes(q) ||
         p.tech.some((t) => t.toLowerCase().includes(q)),
     )
-  }, [query])
+  }, [query, projects])
+
+  const handleCreate = (project: Project) => {
+    setProjects((prev) => [project, ...prev])
+  }
 
   return (
     <>
@@ -221,7 +227,11 @@ export function ProjectsPage() {
         title="Proyectos"
         description="Listado de proyectos técnicos activos con su documentación, bitácora, HU y PR."
         actions={
-          <Button appearance="primary" icon={<Add20Regular />}>
+          <Button
+            appearance="primary"
+            icon={<Add20Regular />}
+            onClick={() => setDrawerOpen(true)}
+          >
             Nuevo proyecto
           </Button>
         }
@@ -303,6 +313,12 @@ export function ProjectsPage() {
           </Caption1>
         </div>
       )}
+
+      <NewProjectDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        onSave={handleCreate}
+      />
     </>
   )
 }
