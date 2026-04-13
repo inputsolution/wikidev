@@ -34,6 +34,66 @@ export interface DevOpsLink {
   title: string
 }
 
+export type UserStoryStatus =
+  | 'Backlog'
+  | 'En progreso'
+  | 'En revisión'
+  | 'QA'
+  | 'Hecho'
+
+export type UserStoryPriority = 'Alta' | 'Media' | 'Baja'
+
+export interface UserStory {
+  id: string
+  projectId: string
+  key: string
+  title: string
+  description: string
+  status: UserStoryStatus
+  priority: UserStoryPriority
+  assignee: ProjectMember
+  sprint: string
+  storyPoints: number
+  createdAt: string
+  updatedAt: string
+  linkedChangeIds: string[]
+}
+
+export type PullRequestStatus =
+  | 'Open'
+  | 'En revisión'
+  | 'Cambios pedidos'
+  | 'Aprobado'
+  | 'Merged'
+  | 'Cerrado'
+
+export type CheckStatus = 'passed' | 'failed' | 'running'
+
+export interface PullRequestCheck {
+  name: string
+  status: CheckStatus
+}
+
+export interface PullRequest {
+  id: string
+  projectId: string
+  number: number
+  title: string
+  branch: string
+  targetBranch: string
+  status: PullRequestStatus
+  author: ProjectMember
+  reviewers: ProjectMember[]
+  createdAt: string
+  updatedAt: string
+  additions: number
+  deletions: number
+  filesChanged: number
+  commentsCount: number
+  linkedHuKeys: string[]
+  checks: PullRequestCheck[]
+}
+
 export interface Attachment {
   id: string
   name: string
