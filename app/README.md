@@ -1,73 +1,60 @@
-# React + TypeScript + Vite
+# wiki DEV
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Portal interno de conocimiento y trazabilidad técnica. Centraliza documentación técnica, bitácora de cambios, historias de usuario y pull requests, con integración prevista para Jira y Azure DevOps.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Vite** + **React 19** + **TypeScript** (modo estricto)
+- **Fluent UI v9** (`@fluentui/react-components`) con tema custom derivado del color de marca `#0395A9`
+- **React Router v6** con rutas protegidas
+- Estructura por features: `src/features/*` + `src/shared/*` + `src/app/*`
+- Alias de imports `@/` apuntando a `src/`
 
-## React Compiler
+## Scripts
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install     # instalar dependencias
+npm run dev     # servidor de desarrollo (http://localhost:5173)
+npm run build   # build de producción
+npm run preview # previsualizar el build
+npm run lint    # linter
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Autenticación
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Actualmente la autenticación usa un **mock service** en memoria (`src/features/auth/services/authService.ts`) con persistencia en `localStorage`. La arquitectura está preparada para reemplazarse por un backend real o Microsoft Entra ID (MSAL) sin cambios en los componentes.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Usuarios de prueba (mock)
+
+| Email                     | Contraseña  | Rol     |
+| ------------------------- | ----------- | ------- |
+| `admin@wikidev.local`     | `admin123`  | admin   |
+| `editor@wikidev.local`    | `editor123` | editor  |
+| `reader@wikidev.local`    | `reader123` | reader  |
+
+> Estas credenciales existen únicamente para desarrollo local. Antes de desplegar a cualquier ambiente real, el `authService` debe apuntarse al backend corporativo y eliminar el array `MOCK_USERS`.
+
+## Estructura
+
 ```
+src/
+├── app/                    # composición raíz (App, router)
+├── features/               # módulos del portal
+│   ├── auth/               # login, contexto, guard
+│   ├── dashboard/
+│   ├── projects/
+│   ├── documentation/
+│   ├── changelog/
+│   ├── integrations/
+│   ├── comments/
+│   ├── attachments/
+│   └── administration/
+└── shared/                 # layout, theme, componentes comunes
+    ├── components/
+    ├── layout/
+    └── theme/
+```
+
+## Módulos
+
+Dashboard, Proyectos, Documentación, Bitácora de Cambios, Integraciones, Comentarios, Adjuntos y Administración.

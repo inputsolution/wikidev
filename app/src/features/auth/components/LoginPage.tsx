@@ -6,12 +6,20 @@ import {
   Input,
   MessageBar,
   MessageBarBody,
-  Text,
-  Title2,
   makeStyles,
   tokens,
 } from '@fluentui/react-components'
+import {
+  Mail20Regular,
+  LockClosed20Regular,
+  Eye20Regular,
+  EyeOff20Regular,
+  ArrowRight20Regular,
+} from '@fluentui/react-icons'
 import { useAuth } from '../hooks/useAuth'
+
+const MONO_STACK =
+  "'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace"
 
 const useStyles = makeStyles({
   page: {
@@ -25,14 +33,57 @@ const useStyles = makeStyles({
   },
   brandPanel: {
     display: 'none',
+    position: 'relative',
     padding: '64px',
-    backgroundColor: tokens.colorBrandBackground,
-    color: tokens.colorNeutralForegroundOnBrand,
+    color: '#EAFDFF',
     flexDirection: 'column',
     justifyContent: 'space-between',
+    overflow: 'hidden',
+    backgroundColor: '#003B44',
+    backgroundImage: `
+      radial-gradient(circle at 20% 0%, rgba(3, 149, 169, 0.55) 0%, transparent 55%),
+      radial-gradient(circle at 90% 100%, rgba(0, 20, 23, 0.85) 0%, transparent 60%),
+      linear-gradient(180deg, #00272D 0%, #003B44 50%, #00151A 100%)
+    `,
     '@media (min-width: 900px)': {
       display: 'flex',
     },
+  },
+  codeBackdrop: {
+    position: 'absolute',
+    inset: 0,
+    pointerEvents: 'none',
+    fontFamily: MONO_STACK,
+    fontSize: '12px',
+    lineHeight: 1.55,
+    color: 'rgba(189, 241, 248, 0.12)',
+    padding: '48px 56px',
+    whiteSpace: 'pre',
+    userSelect: 'none',
+    overflow: 'hidden',
+    maskImage: 'linear-gradient(180deg, transparent 0%, #000 12%, #000 75%, transparent 100%)',
+    WebkitMaskImage:
+      'linear-gradient(180deg, transparent 0%, #000 12%, #000 75%, transparent 100%)',
+  },
+  gridOverlay: {
+    position: 'absolute',
+    inset: 0,
+    pointerEvents: 'none',
+    backgroundImage: `
+      linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px)
+    `,
+    backgroundSize: '32px 32px',
+    maskImage: 'radial-gradient(ellipse at center, #000 30%, transparent 80%)',
+    WebkitMaskImage: 'radial-gradient(ellipse at center, #000 30%, transparent 80%)',
+  },
+  brandContent: {
+    position: 'relative',
+    zIndex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    height: '100%',
   },
   brandHeader: {
     display: 'flex',
@@ -43,84 +94,274 @@ const useStyles = makeStyles({
     width: '56px',
     height: '56px',
     borderRadius: '50%',
-    backgroundColor: tokens.colorNeutralBackground1,
+    backgroundColor: '#FFFFFF',
     padding: '6px',
     boxSizing: 'border-box',
+    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.25)',
   },
   brandTitle: {
     fontSize: '22px',
     fontWeight: 600,
     letterSpacing: '-0.01em',
+    color: '#FFFFFF',
   },
   brandSubtitle: {
-    opacity: 0.85,
-    fontSize: '13px',
-    marginTop: '2px',
-  },
-  brandPitch: {
-    maxWidth: '440px',
-  },
-  brandPitchTitle: {
-    fontSize: '32px',
-    fontWeight: 600,
-    lineHeight: 1.2,
-    marginBottom: '16px',
-  },
-  brandPitchText: {
-    opacity: 0.9,
-    lineHeight: 1.6,
-  },
-  brandFooter: {
     opacity: 0.75,
     fontSize: '12px',
+    marginTop: '2px',
+    fontFamily: MONO_STACK,
+    letterSpacing: '0.02em',
+  },
+  brandPitch: {
+    maxWidth: '480px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '24px',
+  },
+  brandPitchTitle: {
+    fontSize: '36px',
+    fontWeight: 600,
+    lineHeight: 1.15,
+    letterSpacing: '-0.02em',
+    color: '#FFFFFF',
+  },
+  brandPitchHighlight: {
+    color: '#7DDFEE',
+  },
+  brandPitchText: {
+    opacity: 0.82,
+    lineHeight: 1.6,
+    fontSize: '14px',
+    maxWidth: '440px',
+  },
+  commitCard: {
+    marginTop: '8px',
+    padding: '16px 18px',
+    borderRadius: '10px',
+    border: '1px solid rgba(189, 241, 248, 0.18)',
+    backgroundColor: 'rgba(0, 20, 23, 0.55)',
+    backdropFilter: 'blur(6px)',
+    WebkitBackdropFilter: 'blur(6px)',
+    fontFamily: MONO_STACK,
+    fontSize: '12px',
+    lineHeight: 1.7,
+    maxWidth: '440px',
+    boxShadow: '0 12px 32px rgba(0, 0, 0, 0.35)',
+  },
+  commitCardHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    marginBottom: '10px',
+    paddingBottom: '10px',
+    borderBottom: '1px solid rgba(189, 241, 248, 0.12)',
+    color: 'rgba(234, 253, 255, 0.75)',
+    fontSize: '11px',
+    letterSpacing: '0.04em',
+    textTransform: 'uppercase',
+  },
+  dot: {
+    width: '8px',
+    height: '8px',
+    borderRadius: '50%',
+    backgroundColor: '#7DDFEE',
+    boxShadow: '0 0 12px #7DDFEE',
+  },
+  commitHash: {
+    color: '#7DDFEE',
+  },
+  diffAdd: {
+    color: '#5EE3A8',
+  },
+  diffRemove: {
+    color: '#FF8A9B',
+  },
+  meta: {
+    color: 'rgba(234, 253, 255, 0.55)',
+  },
+  brandFooter: {
+    fontFamily: MONO_STACK,
+    fontSize: '11px',
+    color: 'rgba(234, 253, 255, 0.5)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+  },
+  footerDot: {
+    width: '6px',
+    height: '6px',
+    borderRadius: '50%',
+    backgroundColor: '#5EE3A8',
+    boxShadow: '0 0 8px #5EE3A8',
   },
   formPanel: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     padding: '48px 24px',
+    backgroundColor: tokens.colorNeutralBackground1,
+    backgroundImage:
+      'radial-gradient(circle at 85% 15%, rgba(3, 149, 169, 0.06) 0%, transparent 45%)',
+    position: 'relative',
   },
   formCard: {
     width: '100%',
-    maxWidth: '380px',
+    maxWidth: '400px',
     display: 'flex',
     flexDirection: 'column',
-    gap: '24px',
+    gap: '28px',
+    position: 'relative',
+    zIndex: 1,
   },
   formHeader: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '6px',
-  },
-  mobileLogo: {
-    width: '48px',
-    height: '48px',
+    alignItems: 'center',
+    gap: '14px',
     marginBottom: '8px',
-    '@media (min-width: 900px)': {
-      display: 'none',
-    },
+  },
+  formLogo: {
+    width: '72px',
+    height: '72px',
+    padding: '8px',
+    backgroundColor: '#FFFFFF',
+    borderRadius: '18px',
+    border: `1px solid ${tokens.colorNeutralStroke2}`,
+    boxShadow:
+      '0 12px 32px rgba(3, 149, 169, 0.18), 0 2px 6px rgba(15, 23, 42, 0.06)',
+  },
+  formBrandName: {
+    fontSize: '20px',
+    fontWeight: 600,
+    letterSpacing: '-0.01em',
+    color: tokens.colorNeutralForeground1,
+  },
+  kicker: {
+    fontFamily: MONO_STACK,
+    fontSize: '11px',
+    letterSpacing: '0.08em',
+    textTransform: 'uppercase',
+    color: tokens.colorBrandForeground1,
+    marginBottom: '4px',
   },
   form: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '16px',
+    gap: '18px',
   },
-  hint: {
-    backgroundColor: tokens.colorNeutralBackground3,
-    border: `1px solid ${tokens.colorNeutralStroke2}`,
-    borderRadius: tokens.borderRadiusMedium,
-    padding: '12px 14px',
-    fontSize: '12px',
+  field: {
+    '& label': {
+      fontSize: '12px',
+      fontWeight: 600,
+      color: tokens.colorNeutralForeground2,
+      letterSpacing: '0.01em',
+      marginBottom: '6px',
+      textTransform: 'uppercase',
+    },
+  },
+  input: {
+    height: '48px',
+    borderRadiusTop: '10px',
+    borderRadiusBottom: '10px',
+    borderTopLeftRadius: '10px',
+    borderTopRightRadius: '10px',
+    borderBottomLeftRadius: '10px',
+    borderBottomRightRadius: '10px',
+    borderTopWidth: '1px',
+    borderRightWidth: '1px',
+    borderBottomWidth: '1px',
+    borderLeftWidth: '1px',
+    borderTopStyle: 'solid',
+    borderRightStyle: 'solid',
+    borderBottomStyle: 'solid',
+    borderLeftStyle: 'solid',
+    borderTopColor: tokens.colorNeutralStroke1,
+    borderRightColor: tokens.colorNeutralStroke1,
+    borderBottomColor: tokens.colorNeutralStroke1,
+    borderLeftColor: tokens.colorNeutralStroke1,
+    backgroundColor: tokens.colorNeutralBackground1,
+    boxShadow: '0 1px 2px rgba(15, 23, 42, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.6)',
+    transitionProperty: 'border-color, box-shadow, background-color',
+    transitionDuration: '140ms',
+    transitionTimingFunction: 'ease',
+    ':hover': {
+      borderTopColor: tokens.colorNeutralStroke1Hover,
+      borderRightColor: tokens.colorNeutralStroke1Hover,
+      borderBottomColor: tokens.colorNeutralStroke1Hover,
+      borderLeftColor: tokens.colorNeutralStroke1Hover,
+    },
+    ':focus-within': {
+      borderTopColor: tokens.colorBrandStroke1,
+      borderRightColor: tokens.colorBrandStroke1,
+      borderBottomColor: tokens.colorBrandStroke1,
+      borderLeftColor: tokens.colorBrandStroke1,
+      boxShadow: '0 0 0 4px rgba(3, 149, 169, 0.12), 0 1px 2px rgba(15, 23, 42, 0.05)',
+    },
+  },
+  passwordToggle: {
+    border: 'none',
+    background: 'transparent',
+    cursor: 'pointer',
     color: tokens.colorNeutralForeground3,
-    lineHeight: 1.55,
+    padding: '4px',
+    display: 'inline-flex',
+    alignItems: 'center',
+    borderRadius: '4px',
+    ':hover': {
+      color: tokens.colorNeutralForeground1,
+      backgroundColor: tokens.colorNeutralBackground2,
+    },
   },
-  hintTitle: {
+  submit: {
+    height: '48px',
+    borderRadius: '10px',
     fontWeight: 600,
-    color: tokens.colorNeutralForeground2,
-    display: 'block',
-    marginBottom: '4px',
+    marginTop: '6px',
+    boxShadow: '0 8px 20px rgba(3, 149, 169, 0.28), 0 1px 2px rgba(3, 149, 169, 0.18)',
+    transition: 'transform 120ms ease, box-shadow 180ms ease',
+    ':hover': {
+      boxShadow: '0 12px 28px rgba(3, 149, 169, 0.35), 0 1px 2px rgba(3, 149, 169, 0.18)',
+      transform: 'translateY(-1px)',
+    },
+    ':active': {
+      transform: 'translateY(0)',
+    },
+    ':disabled': {
+      boxShadow: 'none',
+      transform: 'none',
+    },
   },
 })
+
+const CODE_BACKDROP = `$ git log --oneline --graph
+* a3f9c2e  refactor(auth): migrate to MSAL provider
+* 7bd104f  feat(dashboard): add PR pending metric
+* 1e2c88a  fix(api): handle 401 refresh edge case
+| * 9c0ffab  docs(arch): update sequence diagram
+|/
+* 5c0aec2  chore: initial portal scaffold
+
+// src/features/projects/service.ts
+export async function fetchProjects(): Promise<Project[]> {
+  const res = await api.get<Project[]>('/projects')
+  return res.data.map(normalizeProject)
+}
+
+-  return legacyAuth.validate(token)
++  return msal.acquireTokenSilent(request)
+
+SELECT p.id, p.name, COUNT(c.id) AS changes
+FROM   projects p
+LEFT   JOIN changes c ON c.project_id = p.id
+WHERE  p.archived = false
+GROUP  BY p.id
+ORDER  BY changes DESC;
+
+[ci] build ........................... passed
+[ci] typecheck ....................... passed
+[ci] lint ............................ passed
+[ci] test ............................ 128 passed
+`
 
 export function LoginPage() {
   const styles = useStyles()
@@ -129,6 +370,7 @@ export function LoginPage() {
   const location = useLocation()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
 
   const from = (location.state as { from?: { pathname: string } } | null)?.from?.pathname ?? '/'
   const isLoading = status === 'loading'
@@ -146,37 +388,59 @@ export function LoginPage() {
   return (
     <div className={styles.page}>
       <aside className={styles.brandPanel}>
-        <div className={styles.brandHeader}>
-          <img src="/logo.png" alt="wiki DEV" className={styles.brandLogo} />
-          <div>
-            <div className={styles.brandTitle}>wiki DEV</div>
-            <div className={styles.brandSubtitle}>Portal interno de conocimiento</div>
-          </div>
-        </div>
+        <div className={styles.gridOverlay} aria-hidden />
+        <pre className={styles.codeBackdrop} aria-hidden>
+          {CODE_BACKDROP}
+        </pre>
 
-        <div className={styles.brandPitch}>
-          <div className={styles.brandPitchTitle}>
-            Documentación técnica con trazabilidad completa.
+        <div className={styles.brandContent}>
+          <div className={styles.brandHeader}>
+            <img src="/logo.png" alt="wiki DEV" className={styles.brandLogo} />
+            <div>
+              <div className={styles.brandTitle}>wiki DEV</div>
+              <div className={styles.brandSubtitle}>~/portal/knowledge</div>
+            </div>
           </div>
-          <div className={styles.brandPitchText}>
-            Centraliza arquitectura, cambios, historias de usuario y pull requests. Integrado con
-            Jira y Azure DevOps.
-          </div>
-        </div>
 
-        <div className={styles.brandFooter}>
-          &copy; {new Date().getFullYear()} wiki DEV &middot; Uso interno
+          <div className={styles.brandPitch}>
+            <div className={styles.brandPitchTitle}>
+              Conocimiento <span className={styles.brandPitchHighlight}>versionado</span>.
+            </div>
+            <div className={styles.brandPitchText}>
+              Commits, pull requests, historias de usuario y documentación técnica trazados en un
+              solo lugar. Integrado con Jira y Azure DevOps.
+            </div>
+
+            <div className={styles.commitCard}>
+              <div className={styles.commitCardHeader}>
+                <span className={styles.dot} />
+                <span>latest commit</span>
+              </div>
+              <div>
+                <span className={styles.commitHash}>a3f9c2e</span>{' '}
+                <span>refactor(auth): migrate to MSAL provider</span>
+              </div>
+              <div className={styles.meta}>
+                <span className={styles.diffAdd}>+284</span>{' '}
+                <span className={styles.diffRemove}>−127</span>
+                {'  ·  '}12 files{'  ·  '}HU-1423{'  ·  '}PR #418
+              </div>
+              <div className={styles.meta}>branch: main → staging</div>
+            </div>
+          </div>
+
+          <div className={styles.brandFooter}>
+            <span className={styles.footerDot} />
+            <span>v0.1.0 · build 5c0aec2 · © {new Date().getFullYear()} wiki DEV</span>
+          </div>
         </div>
       </aside>
 
       <main className={styles.formPanel}>
         <div className={styles.formCard}>
           <div className={styles.formHeader}>
-            <img src="/logo.png" alt="wiki DEV" className={styles.mobileLogo} />
-            <Title2 as="h1">Iniciar sesión</Title2>
-            <Text size={200} style={{ color: tokens.colorNeutralForeground3 }}>
-              Ingresa tus credenciales para acceder al portal.
-            </Text>
+            <img src="/logo.png" alt="wiki DEV" className={styles.formLogo} />
+            <div className={styles.formBrandName}>wiki DEV</div>
           </div>
 
           {error && (
@@ -186,48 +450,58 @@ export function LoginPage() {
           )}
 
           <form className={styles.form} onSubmit={handleSubmit} noValidate>
-            <Field label="Correo electrónico" required>
+            <Field className={styles.field} label="Correo corporativo" required>
               <Input
+                className={styles.input}
                 type="email"
                 value={email}
                 onChange={(_, d) => setEmail(d.value)}
-                placeholder="usuario@empresa.com"
+                placeholder="usuario@bancoademi.com.do"
                 autoComplete="email"
                 disabled={isLoading}
+                contentBefore={<Mail20Regular />}
                 required
               />
             </Field>
 
-            <Field label="Contraseña" required>
+            <Field className={styles.field} label="Contraseña" required>
               <Input
-                type="password"
+                className={styles.input}
+                type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(_, d) => setPassword(d.value)}
                 placeholder="••••••••"
                 autoComplete="current-password"
                 disabled={isLoading}
+                contentBefore={<LockClosed20Regular />}
+                contentAfter={
+                  <button
+                    type="button"
+                    className={styles.passwordToggle}
+                    onClick={() => setShowPassword((v) => !v)}
+                    aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <EyeOff20Regular /> : <Eye20Regular />}
+                  </button>
+                }
                 required
               />
             </Field>
 
             <Button
+              className={styles.submit}
               appearance="primary"
               type="submit"
               size="large"
               disabled={isLoading || !email || !password}
+              icon={<ArrowRight20Regular />}
+              iconPosition="after"
             >
-              {isLoading ? 'Verificando…' : 'Entrar'}
+              {isLoading ? 'Verificando…' : 'Entrar al portal'}
             </Button>
           </form>
 
-          <div className={styles.hint}>
-            <span className={styles.hintTitle}>Usuarios de prueba</span>
-            admin@wikidev.local / admin123
-            <br />
-            editor@wikidev.local / editor123
-            <br />
-            reader@wikidev.local / reader123
-          </div>
         </div>
       </main>
     </div>
