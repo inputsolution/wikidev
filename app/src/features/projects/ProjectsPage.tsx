@@ -1,11 +1,13 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Avatar,
   Badge,
   Button,
   Caption1,
+  Dropdown,
   Input,
+  Option,
   Text,
   makeStyles,
   tokens,
@@ -17,6 +19,8 @@ import {
   DocumentText20Regular,
   BranchFork20Regular,
   History20Regular,
+  ChevronLeft20Regular,
+  ChevronRight20Regular,
 } from '@fluentui/react-icons'
 import { PageHeader } from '@/shared/components/PageHeader'
 import { mockProjects } from './mockData'
@@ -188,6 +192,40 @@ const useStyles = makeStyles({
     alignItems: 'center',
     gap: '8px',
   },
+  pagination: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: '16px',
+    marginTop: '24px',
+    paddingTop: '20px',
+    borderTopWidth: '1px',
+    borderTopStyle: 'solid',
+    borderTopColor: tokens.colorNeutralStroke2,
+    flexWrap: 'wrap',
+  },
+  paginationInfo: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    fontSize: '12px',
+    color: tokens.colorNeutralForeground3,
+    fontFamily: MONO,
+  },
+  paginationControls: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+  },
+  paginationPage: {
+    fontSize: '12px',
+    color: tokens.colorNeutralForeground2,
+    fontFamily: MONO,
+    padding: '0 8px',
+  },
+  pageSizeDropdown: {
+    minWidth: '90px',
+  },
   ownerName: {
     fontSize: '12px',
     color: tokens.colorNeutralForeground2,
@@ -200,11 +238,16 @@ function statusBadge(status: ProjectStatus) {
   return { color: 'subtle', appearance: 'tint' } as const
 }
 
+const PAGE_SIZE_OPTIONS = [6, 9, 12] as const
+type PageSize = (typeof PAGE_SIZE_OPTIONS)[number]
+
 export function ProjectsPage() {
   const styles = useStyles()
   const [query, setQuery] = useState('')
   const [projects, setProjects] = useState<Project[]>(mockProjects)
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState<PageSize>(12)
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -217,8 +260,27 @@ export function ProjectsPage() {
     )
   }, [query, projects])
 
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
+
+  useEffect(() => {
+    setPage(1)
+  }, [query, pageSize])
+
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages)
+  }, [page, totalPages])
+
+  const paginated = useMemo(
+    () => filtered.slice((page - 1) * pageSize, page * pageSize),
+    [filtered, page, pageSize],
+  )
+
+  const rangeStart = filtered.length === 0 ? 0 : (page - 1) * pageSize + 1
+  const rangeEnd = Math.min(page * pageSize, filtered.length)
+
   const handleCreate = (project: Project) => {
     setProjects((prev) => [project, ...prev])
+    setPage(1)
   }
 
   return (
@@ -248,7 +310,7 @@ export function ProjectsPage() {
       </div>
 
       <div className={styles.grid}>
-        {filtered.map((p) => {
+        {paginated.map((p) => {
           const sb = statusBadge(p.status)
           return (
             <Link key={p.id} to={`/proyectos/${p.id}`} className={styles.card}>
@@ -311,6 +373,56 @@ export function ProjectsPage() {
           <Caption1 style={{ display: 'block', marginTop: '8px' }}>
             Sin resultados para "{query}"
           </Caption1>
+        </div>
+      )}
+
+      {filtered.length > 0 && (
+        <div className={styles.pagination}>
+          <div className={styles.paginationInfo}>
+            <span>
+              Mostrando {rangeStart}–{rangeEnd} de {filtered.length}{' '}
+              {filtered.length === 1 ? 'proyecto' : 'proyectos'}
+            </span>
+            <span>·</span>
+            <span>por página</span>
+            <Dropdown
+              className={styles.pageSizeDropdown}
+              value={String(pageSize)}
+              selectedOptions={[String(pageSize)]}
+              onOptionSelect={(_, data) => {
+                if (data.optionValue) setPageSize(Number(data.optionValue) as PageSize)
+              }}
+            >
+              {PAGE_SIZE_OPTIONS.map((n) => (
+                <Option key={n} value={String(n)} text={String(n)}>
+                  {n}
+                </Option>
+              ))}
+            </Dropdown>
+          </div>
+
+          <div className={styles.paginationControls}>
+            <Button
+              icon={<ChevronLeft20Regular />}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+              size="small"
+            >
+              Anterior
+            </Button>
+            <span className={styles.paginationPage}>
+              Página {page} de {totalPages}
+            </span>
+            <Button
+              icon={<ChevronRight20Regular />}
+              iconPosition="after"
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+              size="small"
+            >
+              Siguiente
+            </Button>
+          </div>
         </div>
       )}
 
