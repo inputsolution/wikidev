@@ -4,7 +4,21 @@ import type {
   JiraLink,
   Project,
   ProjectChange,
+  ProjectMember,
 } from './types'
+
+export const mockMembersPool: ProjectMember[] = [
+  { id: 'u-101', name: 'María P.', initials: 'MP' },
+  { id: 'u-102', name: 'Carlos R.', initials: 'CR' },
+  { id: 'u-103', name: 'Ana G.', initials: 'AG' },
+  { id: 'u-104', name: 'Jorge V.', initials: 'JV' },
+  { id: 'u-105', name: 'Luisa F.', initials: 'LF' },
+  { id: 'u-106', name: 'Ricardo M.', initials: 'RM' },
+  { id: 'u-107', name: 'Sofía L.', initials: 'SL' },
+  { id: 'u-108', name: 'Diego G.', initials: 'DG' },
+  { id: 'u-109', name: 'Elena B.', initials: 'EB' },
+  { id: 'u-110', name: 'Pablo N.', initials: 'PN' },
+]
 
 export const mockProjects: Project[] = [
   {

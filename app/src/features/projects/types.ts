@@ -81,6 +81,24 @@ export interface NewChangeDraft {
   comment: string
 }
 
+export interface NewProjectDraft {
+  code: string
+  name: string
+  description: string
+  tech: string[]
+  ownerId: string | null
+  memberIds: string[]
+}
+
+export const emptyNewProjectDraft: NewProjectDraft = {
+  code: '',
+  name: '',
+  description: '',
+  tech: [],
+  ownerId: null,
+  memberIds: [],
+}
+
 export const emptyNewChangeDraft: NewChangeDraft = {
   type: null,
   title: '',
