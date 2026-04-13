@@ -17,7 +17,10 @@ import {
   ArrowRight20Regular,
 } from '@fluentui/react-icons'
 import { useAuth } from '../hooks/useAuth'
-import { useTerminalTyping, type TerminalStep } from '../hooks/useTerminalTyping'
+import {
+  useTerminalTyping,
+  type TerminalStep,
+} from '@/shared/hooks/useTerminalTyping'
 
 const TERMINAL_STEPS: TerminalStep[] = [
   {
