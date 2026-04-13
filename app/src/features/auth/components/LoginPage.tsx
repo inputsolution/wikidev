@@ -17,6 +17,43 @@ import {
   ArrowRight20Regular,
 } from '@fluentui/react-icons'
 import { useAuth } from '../hooks/useAuth'
+import { useTerminalTyping, type TerminalStep } from '../hooks/useTerminalTyping'
+
+const TERMINAL_STEPS: TerminalStep[] = [
+  {
+    command: 'git log --oneline -1',
+    output: [
+      { kind: 'hash', text: 'a3f9c2e refactor(auth): migrate to MSAL provider' },
+      { kind: 'diff', text: '+284 −127  ·  12 files  ·  HU-1423  ·  PR #418' },
+      { kind: 'meta', text: 'branch: main → staging' },
+    ],
+  },
+  {
+    command: 'git status',
+    output: [
+      { kind: 'meta', text: 'On branch main' },
+      { kind: 'meta', text: "Your branch is up to date with 'origin/main'." },
+      { kind: 'plain', text: 'nothing to commit, working tree clean' },
+    ],
+  },
+  {
+    command: 'npm run build',
+    output: [
+      { kind: 'meta', text: '> vite build' },
+      { kind: 'diff', text: '✓ typecheck passed' },
+      { kind: 'diff', text: '✓ 2098 modules transformed' },
+      { kind: 'diff', text: '✓ built in 983ms' },
+    ],
+  },
+  {
+    command: 'git log --graph --oneline -3',
+    output: [
+      { kind: 'hash', text: '* 7bd104f feat(dashboard): add PR pending metric' },
+      { kind: 'hash', text: '* 1e2c88a fix(api): handle 401 refresh edge case' },
+      { kind: 'hash', text: '* 9c0ffab docs(arch): update sequence diagram' },
+    ],
+  },
+]
 
 const MONO_STACK =
   "'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace"
@@ -222,6 +259,7 @@ const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     gap: '2px',
+    minHeight: '150px',
   },
   prompt: {
     color: '#7DDFEE',
@@ -437,6 +475,7 @@ export function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const terminal = useTerminalTyping(TERMINAL_STEPS)
 
   const from = (location.state as { from?: { pathname: string } } | null)?.from?.pathname ?? '/'
   const isLoading = status === 'loading'
@@ -487,22 +526,32 @@ export function LoginPage() {
                 <span className={styles.terminalTitle}>zsh — wiki-dev</span>
               </div>
               <div className={styles.terminalBody}>
-                <div>
-                  <span className={styles.prompt}>$</span>{' '}
-                  <span>git log --oneline -1</span>
-                </div>
-                <div>
-                  <span className={styles.commitHash}>a3f9c2e</span>{' '}
-                  <span>refactor(auth): migrate to MSAL provider</span>
-                </div>
-                <div className={styles.meta}>
-                  <span className={styles.diffAdd}>+284</span>{' '}
-                  <span className={styles.diffRemove}>−127</span>
-                  {'  ·  '}12 files{'  ·  '}HU-1423{'  ·  '}PR #418
-                </div>
-                <div className={styles.meta}>branch: main → staging</div>
+                {terminal.lines.map((line, i) => {
+                  if (line.kind === 'command') {
+                    return (
+                      <div key={`cmd-${i}`}>
+                        <span className={styles.prompt}>$</span>{' '}
+                        <span>{line.text}</span>
+                      </div>
+                    )
+                  }
+                  const className =
+                    line.kind === 'hash'
+                      ? styles.commitHash
+                      : line.kind === 'diff'
+                        ? styles.diffAdd
+                        : line.kind === 'meta'
+                          ? styles.meta
+                          : undefined
+                  return (
+                    <div key={`out-${i}`} className={className}>
+                      {line.text}
+                    </div>
+                  )
+                })}
                 <div className={styles.promptLine}>
                   <span className={styles.prompt}>$</span>
+                  <span>{terminal.currentCommand}</span>
                   <span className={styles.cursor} />
                 </div>
               </div>
