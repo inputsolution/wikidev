@@ -389,10 +389,11 @@ const useStyles = makeStyles({
     transitionDuration: '140ms',
     transitionTimingFunction: 'ease',
     ':hover': {
-      borderTopColor: tokens.colorNeutralStroke1Hover,
-      borderRightColor: tokens.colorNeutralStroke1Hover,
-      borderBottomColor: tokens.colorNeutralStroke1Hover,
-      borderLeftColor: tokens.colorNeutralStroke1Hover,
+      borderTopColor: tokens.colorNeutralStroke2,
+      borderRightColor: tokens.colorNeutralStroke2,
+      borderBottomColor: tokens.colorNeutralStroke2,
+      borderLeftColor: tokens.colorNeutralStroke2,
+      backgroundColor: tokens.colorNeutralBackground2,
     },
     ':focus-within': {
       borderTopColor: tokens.colorBrandStroke1,
@@ -472,8 +473,8 @@ export function LoginPage() {
   const { login, status, error } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('admin@wikidev.local')
+  const [password, setPassword] = useState('admin123')
   const [showPassword, setShowPassword] = useState(false)
   const terminal = useTerminalTyping(TERMINAL_STEPS)
 
@@ -560,7 +561,9 @@ export function LoginPage() {
 
           <div className={styles.brandFooter}>
             <span className={styles.footerDot} />
-            <span>v0.1.0 · build 5c0aec2 · © {new Date().getFullYear()} wiki DEV</span>
+            <span>
+              v0.1.0 · build 5c0aec2 · © {new Date().getFullYear()} Banco Ademi · wiki DEV
+            </span>
           </div>
         </div>
       </aside>
@@ -627,7 +630,7 @@ export function LoginPage() {
               icon={<ArrowRight20Regular />}
               iconPosition="after"
             >
-              {isLoading ? 'Verificando…' : 'Entrar al portal'}
+              {isLoading ? 'Verificando…' : 'Acceder al portal'}
             </Button>
           </form>
 
