@@ -52,10 +52,49 @@ export interface ProjectChange {
   type: ChangeType
   title: string
   description: string
+  technicalDescription?: string
+  impactedComponents?: string[]
   huRefs: string[]
   prRefs: string[]
   author: ProjectMember
   environment: Environment
   version: string
+  attachments?: Attachment[]
   comment?: ChangeComment
+}
+
+export interface NewChangeDraft {
+  type: ChangeType | null
+  title: string
+  description: string
+  technicalDescription: string
+  environment: Environment | null
+  version: string
+  impactedComponents: string[]
+  hasHu: boolean
+  huRefs: string[]
+  hasPr: boolean
+  prRefs: string[]
+  hasAttachments: boolean
+  attachments: Array<{ name: string; size: string }>
+  hasComment: boolean
+  comment: string
+}
+
+export const emptyNewChangeDraft: NewChangeDraft = {
+  type: null,
+  title: '',
+  description: '',
+  technicalDescription: '',
+  environment: null,
+  version: '',
+  impactedComponents: [],
+  hasHu: false,
+  huRefs: [],
+  hasPr: false,
+  prRefs: [],
+  hasAttachments: false,
+  attachments: [],
+  hasComment: false,
+  comment: '',
 }
