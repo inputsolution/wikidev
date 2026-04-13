@@ -16,6 +16,7 @@ import {
   Eye20Regular,
   EyeOff20Regular,
   ArrowRight20Regular,
+  Checkmark20Filled,
 } from '@fluentui/react-icons'
 import { useAuth } from '../hooks/useAuth'
 import {
@@ -424,7 +425,7 @@ const useStyles = makeStyles({
     borderRadius: '10px',
     fontWeight: 600,
     marginTop: '6px',
-    transition: 'transform 120ms ease',
+    transition: 'transform 120ms ease, background-color 240ms ease, border-color 240ms ease',
     ':hover': {
       transform: 'translateY(-1px)',
     },
@@ -434,6 +435,37 @@ const useStyles = makeStyles({
     ':disabled': {
       transform: 'none',
     },
+  },
+  submitSuccess: {
+    backgroundColor: '#10B981',
+    borderTopColor: '#10B981',
+    borderRightColor: '#10B981',
+    borderBottomColor: '#10B981',
+    borderLeftColor: '#10B981',
+    color: '#FFFFFF',
+    ':hover': {
+      backgroundColor: '#059669',
+      borderTopColor: '#059669',
+      borderRightColor: '#059669',
+      borderBottomColor: '#059669',
+      borderLeftColor: '#059669',
+      color: '#FFFFFF',
+      transform: 'none',
+    },
+    ':disabled': {
+      backgroundColor: '#10B981',
+      color: '#FFFFFF',
+      opacity: 1,
+    },
+  },
+  successIconWrap: {
+    display: 'inline-flex',
+    animationName: {
+      from: { transform: 'scale(0.4)', opacity: 0 },
+      to: { transform: 'scale(1)', opacity: 1 },
+    },
+    animationDuration: '280ms',
+    animationTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
   },
 })
 
@@ -475,6 +507,7 @@ export function LoginPage() {
   const [username, setUsername] = useState('jeheredia')
   const [password, setPassword] = useState('admin123')
   const [showPassword, setShowPassword] = useState(false)
+  const [succeeded, setSucceeded] = useState(false)
   const terminal = useTerminalTyping(TERMINAL_STEPS)
 
   const from = (location.state as { from?: { pathname: string } } | null)?.from?.pathname ?? '/'
@@ -489,7 +522,10 @@ export function LoginPage() {
     e.preventDefault()
     try {
       await login({ email: resolveEmail(username), password })
-      navigate(from, { replace: true })
+      setSucceeded(true)
+      window.setTimeout(() => {
+        navigate(from, { replace: true })
+      }, 700)
     } catch {
       // error expuesto vía contexto
     }
@@ -626,13 +662,17 @@ export function LoginPage() {
             </Field>
 
             <Button
-              className={styles.submit}
+              className={`${styles.submit} ${succeeded ? styles.submitSuccess : ''}`}
               appearance="primary"
               type="submit"
               size="large"
-              disabled={isLoading || !username || !password}
+              disabled={isLoading || succeeded || !username || !password}
               icon={
-                isLoading ? (
+                succeeded ? (
+                  <span className={styles.successIconWrap}>
+                    <Checkmark20Filled />
+                  </span>
+                ) : isLoading ? (
                   <Spinner size="tiny" appearance="inverted" />
                 ) : (
                   <ArrowRight20Regular />
@@ -640,7 +680,11 @@ export function LoginPage() {
               }
               iconPosition="after"
             >
-              {isLoading ? 'Verificando credenciales…' : 'Acceder al portal'}
+              {succeeded
+                ? 'Acceso concedido'
+                : isLoading
+                  ? 'Verificando credenciales…'
+                  : 'Acceder al portal'}
             </Button>
           </form>
 
