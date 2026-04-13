@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   Avatar,
   Badge,
@@ -10,6 +10,7 @@ import {
   DialogSurface,
   DialogTitle,
   DialogTrigger,
+  Dropdown,
   Field,
   Input,
   Menu,
@@ -17,10 +18,15 @@ import {
   MenuList,
   MenuPopover,
   MenuTrigger,
+  Option,
   Select,
+  Tab,
+  TabList,
   Textarea,
   makeStyles,
   tokens,
+  type SelectTabData,
+  type SelectTabEvent,
 } from '@fluentui/react-components'
 import {
   Add20Regular,
@@ -30,8 +36,6 @@ import {
   Dismiss20Regular,
   Edit20Regular,
   History20Regular,
-  DocumentText20Regular,
-  FolderOpen20Regular,
 } from '@fluentui/react-icons'
 import { PageHeader } from '@/shared/components/PageHeader'
 import { mockProjects } from '@/features/projects/mockData'
@@ -51,41 +55,14 @@ const MONO =
   "'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace"
 
 const useStyles = makeStyles({
-  layout: {
-    display: 'grid',
-    gridTemplateColumns: '240px 260px minmax(0, 1fr)',
-    gap: '16px',
-    minHeight: 'calc(100vh - 180px)',
-  },
-  column: {
-    backgroundColor: tokens.colorNeutralBackground1,
-    borderTopWidth: '1px',
-    borderRightWidth: '1px',
-    borderBottomWidth: '1px',
-    borderLeftWidth: '1px',
-    borderTopStyle: 'solid',
-    borderRightStyle: 'solid',
-    borderBottomStyle: 'solid',
-    borderLeftStyle: 'solid',
-    borderTopColor: tokens.colorNeutralStroke2,
-    borderRightColor: tokens.colorNeutralStroke2,
-    borderBottomColor: tokens.colorNeutralStroke2,
-    borderLeftColor: tokens.colorNeutralStroke2,
-    borderRadius: '12px',
+  toolbar: {
     display: 'flex',
-    flexDirection: 'column',
-    minHeight: 0,
-  },
-  columnHead: {
-    display: 'flex',
+    gap: '14px',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '14px 16px',
-    borderBottomWidth: '1px',
-    borderBottomStyle: 'solid',
-    borderBottomColor: tokens.colorNeutralStroke2,
+    marginBottom: '18px',
+    flexWrap: 'wrap',
   },
-  columnTitle: {
+  toolbarLabel: {
     fontSize: '11px',
     fontWeight: 700,
     color: tokens.colorNeutralForeground3,
@@ -93,78 +70,49 @@ const useStyles = makeStyles({
     letterSpacing: '0.08em',
     fontFamily: MONO,
   },
-  list: {
-    display: 'flex',
-    flexDirection: 'column',
-    padding: '8px',
-    gap: '2px',
-    overflowY: 'auto',
+  projectDropdown: {
+    minWidth: '280px',
+  },
+  spacer: {
     flex: 1,
   },
-  row: {
+  tabsRow: {
     display: 'flex',
     alignItems: 'center',
-    gap: '10px',
-    padding: '10px 12px',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    textAlign: 'left',
-    backgroundColor: 'transparent',
-    borderTopWidth: '0',
-    borderRightWidth: '0',
-    borderBottomWidth: '0',
-    borderLeftWidth: '0',
-    color: tokens.colorNeutralForeground2,
-    transition: 'background-color 140ms ease, color 140ms ease',
-    ':hover': {
-      backgroundColor: tokens.colorNeutralBackground2,
-      color: tokens.colorNeutralForeground1,
-    },
+    gap: '12px',
+    borderBottomWidth: '1px',
+    borderBottomStyle: 'solid',
+    borderBottomColor: tokens.colorNeutralStroke2,
+    marginBottom: '0',
   },
-  rowActive: {
-    backgroundColor: tokens.colorBrandBackground2,
-    color: tokens.colorBrandForeground1,
-    ':hover': {
-      backgroundColor: tokens.colorBrandBackground2,
-      color: tokens.colorBrandForeground1,
-    },
-  },
-  rowMain: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '2px',
-    minWidth: 0,
+  tabs: {
     flex: 1,
+    overflowX: 'auto',
   },
-  rowTitle: {
-    fontSize: '13px',
-    fontWeight: 600,
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-  },
-  rowSub: {
-    fontSize: '11px',
-    color: tokens.colorNeutralForeground4,
-    fontFamily: MONO,
-  },
-  icon: {
-    color: 'currentColor',
+  newSectionBtn: {
     flexShrink: 0,
+    marginBottom: '6px',
   },
-  emptyList: {
-    padding: '32px 16px',
-    textAlign: 'center',
-    color: tokens.colorNeutralForeground4,
-    fontSize: '12px',
-  },
-  viewer: {
+  panel: {
+    backgroundColor: tokens.colorNeutralBackground1,
+    borderTopWidth: '0',
+    borderRightWidth: '1px',
+    borderBottomWidth: '1px',
+    borderLeftWidth: '1px',
+    borderRightStyle: 'solid',
+    borderBottomStyle: 'solid',
+    borderLeftStyle: 'solid',
+    borderRightColor: tokens.colorNeutralStroke2,
+    borderBottomColor: tokens.colorNeutralStroke2,
+    borderLeftColor: tokens.colorNeutralStroke2,
+    borderBottomLeftRadius: '12px',
+    borderBottomRightRadius: '12px',
     display: 'flex',
     flexDirection: 'column',
-    minHeight: 0,
+    minHeight: 'calc(100vh - 280px)',
   },
   viewerHead: {
-    padding: '20px 24px',
+    padding: '22px 28px',
     borderBottomWidth: '1px',
     borderBottomStyle: 'solid',
     borderBottomColor: tokens.colorNeutralStroke2,
@@ -186,7 +134,7 @@ const useStyles = makeStyles({
     flexWrap: 'wrap',
   },
   viewerTitle: {
-    fontSize: '22px',
+    fontSize: '24px',
     fontWeight: 600,
     color: tokens.colorNeutralForeground1,
     letterSpacing: '-0.02em',
@@ -213,21 +161,25 @@ const useStyles = makeStyles({
     fontFamily: MONO,
   },
   viewerBody: {
-    padding: '24px',
+    padding: '28px 32px',
     overflowY: 'auto',
     flex: 1,
+    maxWidth: '900px',
+    width: '100%',
+    alignSelf: 'center',
+    boxSizing: 'border-box',
   },
   contentPre: {
     margin: 0,
     fontFamily: MONO,
     fontSize: '13px',
-    lineHeight: 1.65,
+    lineHeight: 1.75,
     color: tokens.colorNeutralForeground1,
     whiteSpace: 'pre-wrap',
     wordBreak: 'break-word',
   },
   editorFooter: {
-    padding: '14px 24px',
+    padding: '14px 28px',
     borderTopWidth: '1px',
     borderTopStyle: 'solid',
     borderTopColor: tokens.colorNeutralStroke2,
@@ -244,20 +196,7 @@ const useStyles = makeStyles({
   },
   editorTextarea: {
     width: '100%',
-    minHeight: '360px',
-    borderTopWidth: '1px',
-    borderRightWidth: '1px',
-    borderBottomWidth: '1px',
-    borderLeftWidth: '1px',
-    borderTopStyle: 'solid',
-    borderRightStyle: 'solid',
-    borderBottomStyle: 'solid',
-    borderLeftStyle: 'solid',
-    borderTopColor: tokens.colorNeutralStroke1,
-    borderRightColor: tokens.colorNeutralStroke1,
-    borderBottomColor: tokens.colorNeutralStroke1,
-    borderLeftColor: tokens.colorNeutralStroke1,
-    borderRadius: '8px',
+    minHeight: '420px',
   },
   emptyState: {
     flex: 1,
@@ -267,12 +206,12 @@ const useStyles = makeStyles({
     justifyContent: 'center',
     gap: '12px',
     color: tokens.colorNeutralForeground3,
-    padding: '48px',
+    padding: '80px 48px',
     textAlign: 'center',
   },
   emptyIcon: {
-    width: '56px',
-    height: '56px',
+    width: '64px',
+    height: '64px',
     borderRadius: '50%',
     backgroundColor: tokens.colorBrandBackground2,
     color: tokens.colorBrandForeground1,
@@ -280,12 +219,22 @@ const useStyles = makeStyles({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: '8px',
+    fontSize: '24px',
+  },
+  emptyTitle: {
+    fontWeight: 600,
+    fontSize: '16px',
+    color: tokens.colorNeutralForeground1,
+  },
+  emptyText: {
+    fontSize: '13px',
+    maxWidth: '420px',
   },
   historyVersion: {
     display: 'flex',
     flexDirection: 'column',
     gap: '2px',
-    padding: '8px 10px',
+    padding: '4px 0',
   },
   historyVersionNumber: {
     fontFamily: MONO,
@@ -297,23 +246,28 @@ const useStyles = makeStyles({
     fontSize: '11px',
     color: tokens.colorNeutralForeground3,
   },
+  historicBanner: {
+    padding: '12px 16px',
+    backgroundColor: tokens.colorPaletteDarkOrangeBackground1,
+    color: tokens.colorPaletteDarkOrangeForeground1,
+    fontSize: '12px',
+    borderRadius: '8px',
+    margin: '16px 28px 0',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: '12px',
+    flexWrap: 'wrap',
+  },
   dialogSection: {
     display: 'flex',
     flexDirection: 'column',
     gap: '14px',
   },
-  historicBanner: {
-    padding: '10px 14px',
-    backgroundColor: tokens.colorPaletteDarkOrangeBackground1,
-    color: tokens.colorPaletteDarkOrangeForeground1,
-    fontSize: '12px',
-    borderRadius: '6px',
-    margin: '0 24px',
-    marginTop: '16px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: '12px',
+  projectMeta: {
+    fontSize: '11px',
+    color: tokens.colorNeutralForeground3,
+    fontFamily: MONO,
   },
 })
 
@@ -356,7 +310,9 @@ export function DocumentationPage() {
   const styles = useStyles()
   const { user } = useAuth()
   const [sections, setSections] = useState<DocSection[]>(mockDocSections)
-  const [selectedProjectId, setSelectedProjectId] = useState<string>(mockProjects[0]?.id ?? '')
+  const [selectedProjectId, setSelectedProjectId] = useState<string>(
+    mockProjects[0]?.id ?? '',
+  )
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null)
   const [editMode, setEditMode] = useState(false)
   const [editorContent, setEditorContent] = useState('')
@@ -369,6 +325,17 @@ export function DocumentationPage() {
     () => sections.filter((s) => s.projectId === selectedProjectId),
     [sections, selectedProjectId],
   )
+
+  useEffect(() => {
+    if (projectSections.length === 0) {
+      setSelectedSectionId(null)
+      return
+    }
+    const exists = projectSections.find((s) => s.id === selectedSectionId)
+    if (!exists) {
+      setSelectedSectionId(projectSections[0].id)
+    }
+  }, [projectSections, selectedSectionId])
 
   const selectedSection = useMemo(
     () => sections.find((s) => s.id === selectedSectionId) ?? null,
@@ -389,7 +356,10 @@ export function DocumentationPage() {
   const isHistoricView =
     !!viewingVersionId &&
     !!selectedSection &&
-    viewingVersionId !== selectedSection.versions[selectedSection.versions.length - 1]?.id
+    viewingVersionId !==
+      selectedSection.versions[selectedSection.versions.length - 1]?.id
+
+  const selectedProject = mockProjects.find((p) => p.id === selectedProjectId)
 
   const handleSelectProject = (projectId: string) => {
     setSelectedProjectId(projectId)
@@ -398,8 +368,8 @@ export function DocumentationPage() {
     setViewingVersionId(null)
   }
 
-  const handleSelectSection = (sectionId: string) => {
-    setSelectedSectionId(sectionId)
+  const handleTabSelect = (_e: SelectTabEvent, data: SelectTabData) => {
+    setSelectedSectionId(String(data.value))
     setEditMode(false)
     setViewingVersionId(null)
   }
@@ -498,249 +468,236 @@ export function DocumentationPage() {
         description="Editor estructurado por proyecto con secciones y versionado."
       />
 
-      <div className={styles.layout}>
-        {/* Columna 1: Proyectos */}
-        <div className={styles.column}>
-          <div className={styles.columnHead}>
-            <span className={styles.columnTitle}>// proyectos</span>
-          </div>
-          <div className={styles.list}>
-            {mockProjects.map((p) => {
-              const isActive = p.id === selectedProjectId
-              const count = sections.filter((s) => s.projectId === p.id).length
-              return (
-                <button
-                  key={p.id}
-                  type="button"
-                  className={`${styles.row} ${isActive ? styles.rowActive : ''}`}
-                  onClick={() => handleSelectProject(p.id)}
-                >
-                  <FolderOpen20Regular className={styles.icon} />
-                  <div className={styles.rowMain}>
-                    <span className={styles.rowTitle}>{p.name}</span>
-                    <span className={styles.rowSub}>
-                      {p.code} · {count} {count === 1 ? 'sección' : 'secciones'}
-                    </span>
-                  </div>
-                </button>
-              )
-            })}
-          </div>
-        </div>
-
-        {/* Columna 2: Secciones */}
-        <div className={styles.column}>
-          <div className={styles.columnHead}>
-            <span className={styles.columnTitle}>// secciones</span>
-            <Button
-              size="small"
-              appearance="primary"
-              icon={<Add20Regular />}
-              onClick={() => setNewDialogOpen(true)}
-              disabled={!selectedProjectId}
-            >
-              Nueva
-            </Button>
-          </div>
-          <div className={styles.list}>
-            {projectSections.length === 0 && (
-              <div className={styles.emptyList}>
-                Este proyecto aún no tiene secciones.
-                <br />
-                Usa <strong>Nueva</strong> para crear la primera.
-              </div>
-            )}
-            {projectSections.map((s) => {
-              const isActive = s.id === selectedSectionId
-              const lastVersion = s.versions[s.versions.length - 1]
-              return (
-                <button
-                  key={s.id}
-                  type="button"
-                  className={`${styles.row} ${isActive ? styles.rowActive : ''}`}
-                  onClick={() => handleSelectSection(s.id)}
-                >
-                  <DocumentText20Regular className={styles.icon} />
-                  <div className={styles.rowMain}>
-                    <span className={styles.rowTitle}>{s.title}</span>
-                    <span className={styles.rowSub}>
-                      v{lastVersion?.number ?? 1} · {lastVersion?.createdAt}
-                    </span>
-                  </div>
-                </button>
-              )
-            })}
-          </div>
-        </div>
-
-        {/* Columna 3: Viewer / Editor */}
-        <div className={`${styles.column} ${styles.viewer}`}>
-          {!selectedSection && (
-            <div className={styles.emptyState}>
-              <div className={styles.emptyIcon}>
-                <BookOpen20Regular />
-              </div>
-              <div style={{ fontWeight: 600, fontSize: '15px' }}>
-                Selecciona una sección
-              </div>
-              <div style={{ fontSize: '13px', maxWidth: '360px' }}>
-                Elige un proyecto y luego una sección para ver su documentación. Puedes crear
-                nuevas secciones o guardar una nueva versión del contenido.
-              </div>
-            </div>
-          )}
-
-          {selectedSection && activeVersion && (
-            <>
-              <div className={styles.viewerHead}>
-                <div className={styles.viewerKicker}>
-                  // {mockProjects.find((p) => p.id === selectedSection.projectId)?.code ?? ''}{' '}
-                  · {selectedSection.kind}
-                </div>
-                <div className={styles.viewerTitleRow}>
-                  <span className={styles.viewerTitle}>{selectedSection.title}</span>
-                  {!editMode && (
-                    <div className={styles.viewerActions}>
-                      <Menu>
-                        <MenuTrigger disableButtonEnhancement>
-                          <Button icon={<History20Regular />}>
-                            Historial ({selectedSection.versions.length})
-                          </Button>
-                        </MenuTrigger>
-                        <MenuPopover>
-                          <MenuList>
-                            {[...selectedSection.versions]
-                              .slice()
-                              .reverse()
-                              .map((v) => (
-                                <MenuItem
-                                  key={v.id}
-                                  onClick={() => setViewingVersionId(v.id)}
-                                >
-                                  <div className={styles.historyVersion}>
-                                    <span className={styles.historyVersionNumber}>
-                                      v{v.number}
-                                    </span>
-                                    <span className={styles.historyVersionMeta}>
-                                      {v.author.name} · {v.createdAt}
-                                      {v.note ? ` · ${v.note}` : ''}
-                                    </span>
-                                  </div>
-                                </MenuItem>
-                              ))}
-                          </MenuList>
-                        </MenuPopover>
-                      </Menu>
-                      <Button
-                        appearance="primary"
-                        icon={<Edit20Regular />}
-                        onClick={handleStartEdit}
-                      >
-                        Editar
-                      </Button>
-                    </div>
-                  )}
-                </div>
-                <div className={styles.viewerMeta}>
-                  <span className={styles.viewerMetaItem}>
-                    <Badge appearance="tint">v{activeVersion.number}</Badge>
-                  </span>
-                  <span className={styles.viewerMetaItem}>
-                    <Avatar
-                      name={activeVersion.author.name}
-                      initials={activeVersion.author.initials}
-                      color="brand"
-                      size={20}
-                    />
-                    {activeVersion.author.name}
-                  </span>
-                  <span className={`${styles.viewerMetaItem} ${styles.viewerMono}`}>
-                    {activeVersion.createdAt}
-                  </span>
-                  {activeVersion.note && (
-                    <span className={styles.viewerMetaItem}>· {activeVersion.note}</span>
-                  )}
-                </div>
-              </div>
-
-              {isHistoricView && !editMode && (
-                <div className={styles.historicBanner}>
-                  <span>
-                    Estás viendo la <strong>versión v{activeVersion.number}</strong> (histórica).
-                    La versión actual es v
-                    {selectedSection.versions[selectedSection.versions.length - 1].number}.
-                  </span>
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <Button
-                      size="small"
-                      icon={<ArrowUndo20Regular />}
-                      onClick={handleRestoreVersion}
-                    >
-                      Restaurar como nueva versión
-                    </Button>
-                    <Button
-                      size="small"
-                      appearance="subtle"
-                      onClick={() => setViewingVersionId(null)}
-                    >
-                      Volver a la actual
-                    </Button>
+      <div className={styles.toolbar}>
+        <span className={styles.toolbarLabel}>// proyecto</span>
+        <Dropdown
+          className={styles.projectDropdown}
+          value={selectedProject?.name ?? ''}
+          selectedOptions={[selectedProjectId]}
+          onOptionSelect={(_, data) => {
+            if (data.optionValue) handleSelectProject(data.optionValue)
+          }}
+        >
+          {mockProjects.map((p) => {
+            const count = sections.filter((s) => s.projectId === p.id).length
+            return (
+              <Option key={p.id} value={p.id} text={p.name}>
+                <div>
+                  <div style={{ fontWeight: 600 }}>{p.name}</div>
+                  <div className={styles.projectMeta}>
+                    {p.code} · {count} {count === 1 ? 'sección' : 'secciones'}
                   </div>
                 </div>
-              )}
-
-              <div className={styles.viewerBody}>
-                {editMode ? (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                    <Field label="Contenido (markdown plano)">
-                      <Textarea
-                        className={styles.editorTextarea}
-                        value={editorContent}
-                        onChange={(_, d) => setEditorContent(d.value)}
-                        resize="vertical"
-                        rows={20}
-                      />
-                    </Field>
-                    <Field label="Nota del cambio (opcional)">
-                      <Input
-                        placeholder="Ej: Se actualiza el diagrama"
-                        value={editorNote}
-                        onChange={(_, d) => setEditorNote(d.value)}
-                      />
-                    </Field>
-                  </div>
-                ) : (
-                  <pre className={styles.contentPre}>{activeVersion.content}</pre>
-                )}
-              </div>
-
-              {editMode && (
-                <div className={styles.editorFooter}>
-                  <span className={styles.editorFooterHint}>
-                    // se creará v
-                    {(selectedSection.versions[selectedSection.versions.length - 1]?.number ?? 0) + 1}
-                  </span>
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <Button icon={<Dismiss20Regular />} onClick={handleCancelEdit}>
-                      Cancelar
-                    </Button>
-                    <Button
-                      appearance="primary"
-                      icon={<Checkmark20Regular />}
-                      onClick={handleSaveVersion}
-                      disabled={editorContent.trim().length === 0}
-                    >
-                      Guardar nueva versión
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </>
-          )}
-        </div>
+              </Option>
+            )
+          })}
+        </Dropdown>
+        <div className={styles.spacer} />
       </div>
 
-      {/* Dialog: nueva sección */}
+      <div className={styles.tabsRow}>
+        <div className={styles.tabs}>
+          {projectSections.length > 0 && (
+            <TabList
+              selectedValue={selectedSectionId ?? ''}
+              onTabSelect={handleTabSelect}
+              size="medium"
+            >
+              {projectSections.map((s) => {
+                const last = s.versions[s.versions.length - 1]
+                return (
+                  <Tab key={s.id} value={s.id}>
+                    {s.title}
+                    <Badge
+                      appearance="tint"
+                      size="extra-small"
+                      style={{ marginLeft: 8 }}
+                    >
+                      v{last?.number ?? 1}
+                    </Badge>
+                  </Tab>
+                )
+              })}
+            </TabList>
+          )}
+        </div>
+        <Button
+          className={styles.newSectionBtn}
+          size="small"
+          appearance="primary"
+          icon={<Add20Regular />}
+          onClick={() => setNewDialogOpen(true)}
+          disabled={!selectedProjectId}
+        >
+          Nueva sección
+        </Button>
+      </div>
+
+      <div className={styles.panel}>
+        {!selectedSection && (
+          <div className={styles.emptyState}>
+            <div className={styles.emptyIcon}>
+              <BookOpen20Regular />
+            </div>
+            <div className={styles.emptyTitle}>Sin secciones aún</div>
+            <div className={styles.emptyText}>
+              Este proyecto no tiene secciones de documentación. Usa{' '}
+              <strong>Nueva sección</strong> para crear la primera.
+            </div>
+          </div>
+        )}
+
+        {selectedSection && activeVersion && (
+          <>
+            <div className={styles.viewerHead}>
+              <div className={styles.viewerKicker}>
+                // {selectedProject?.code ?? ''} · {selectedSection.kind}
+              </div>
+              <div className={styles.viewerTitleRow}>
+                <span className={styles.viewerTitle}>{selectedSection.title}</span>
+                {!editMode && (
+                  <div className={styles.viewerActions}>
+                    <Menu>
+                      <MenuTrigger disableButtonEnhancement>
+                        <Button icon={<History20Regular />}>
+                          Historial ({selectedSection.versions.length})
+                        </Button>
+                      </MenuTrigger>
+                      <MenuPopover>
+                        <MenuList>
+                          {[...selectedSection.versions]
+                            .slice()
+                            .reverse()
+                            .map((v) => (
+                              <MenuItem
+                                key={v.id}
+                                onClick={() => setViewingVersionId(v.id)}
+                              >
+                                <div className={styles.historyVersion}>
+                                  <span className={styles.historyVersionNumber}>
+                                    v{v.number}
+                                  </span>
+                                  <span className={styles.historyVersionMeta}>
+                                    {v.author.name} · {v.createdAt}
+                                    {v.note ? ` · ${v.note}` : ''}
+                                  </span>
+                                </div>
+                              </MenuItem>
+                            ))}
+                        </MenuList>
+                      </MenuPopover>
+                    </Menu>
+                    <Button
+                      appearance="primary"
+                      icon={<Edit20Regular />}
+                      onClick={handleStartEdit}
+                    >
+                      Editar
+                    </Button>
+                  </div>
+                )}
+              </div>
+              <div className={styles.viewerMeta}>
+                <span className={styles.viewerMetaItem}>
+                  <Badge appearance="tint">v{activeVersion.number}</Badge>
+                </span>
+                <span className={styles.viewerMetaItem}>
+                  <Avatar
+                    name={activeVersion.author.name}
+                    initials={activeVersion.author.initials}
+                    color="brand"
+                    size={20}
+                  />
+                  {activeVersion.author.name}
+                </span>
+                <span className={`${styles.viewerMetaItem} ${styles.viewerMono}`}>
+                  {activeVersion.createdAt}
+                </span>
+                {activeVersion.note && (
+                  <span className={styles.viewerMetaItem}>· {activeVersion.note}</span>
+                )}
+              </div>
+            </div>
+
+            {isHistoricView && !editMode && (
+              <div className={styles.historicBanner}>
+                <span>
+                  Estás viendo la <strong>versión v{activeVersion.number}</strong> (histórica).
+                  La versión actual es v
+                  {selectedSection.versions[selectedSection.versions.length - 1].number}.
+                </span>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <Button
+                    size="small"
+                    icon={<ArrowUndo20Regular />}
+                    onClick={handleRestoreVersion}
+                  >
+                    Restaurar como nueva versión
+                  </Button>
+                  <Button
+                    size="small"
+                    appearance="subtle"
+                    onClick={() => setViewingVersionId(null)}
+                  >
+                    Volver a la actual
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            <div className={styles.viewerBody}>
+              {editMode ? (
+                <div
+                  style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}
+                >
+                  <Field label="Contenido (markdown plano)">
+                    <Textarea
+                      className={styles.editorTextarea}
+                      value={editorContent}
+                      onChange={(_, d) => setEditorContent(d.value)}
+                      resize="vertical"
+                      rows={22}
+                    />
+                  </Field>
+                  <Field label="Nota del cambio (opcional)">
+                    <Input
+                      placeholder="Ej: Se actualiza el diagrama"
+                      value={editorNote}
+                      onChange={(_, d) => setEditorNote(d.value)}
+                    />
+                  </Field>
+                </div>
+              ) : (
+                <pre className={styles.contentPre}>{activeVersion.content}</pre>
+              )}
+            </div>
+
+            {editMode && (
+              <div className={styles.editorFooter}>
+                <span className={styles.editorFooterHint}>
+                  // se creará v
+                  {(selectedSection.versions[selectedSection.versions.length - 1]
+                    ?.number ?? 0) + 1}
+                </span>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <Button icon={<Dismiss20Regular />} onClick={handleCancelEdit}>
+                    Cancelar
+                  </Button>
+                  <Button
+                    appearance="primary"
+                    icon={<Checkmark20Regular />}
+                    onClick={handleSaveVersion}
+                    disabled={editorContent.trim().length === 0}
+                  >
+                    Guardar nueva versión
+                  </Button>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
       <Dialog
         open={newDialogOpen}
         onOpenChange={(_, data) => {
