@@ -1,0 +1,118 @@
+Portal Interno de Conocimiento y
+
+Trazabilidad Técnica
+
+1. Descripción General
+
+Este portal tiene como objetivo centralizar la documentación técnica, la trazabilidad de
+
+cambios, y la integración con herramientas como Jira y Azure DevOps. No es una simple
+
+wiki, sino un sistema vivo de conocimiento con historial, comentarios y evidencias.
+
+2. Estructura del Frontend
+
+El sistema se compone de un layout principal con:
+
+- Header: buscador global, notificaciones, usuario
+
+- Sidebar: navegación por módulos
+
+- Contenido dinámico según módulo seleccionado
+
+3. Módulos Principales
+
+3.1 Dashboard
+
+Vista general con métricas: proyectos activos, cambios recientes, PR pendientes y gráficos.
+
+3.2 Proyectos
+
+Listado de proyectos con vista detalle que contiene tabs:
+
+- Resumen
+
+- Documentación
+
+- Bitácora
+
+- HU
+
+- PR
+
+- Adjuntos
+
+3.3 Documentación
+
+Editor estructurado por secciones:
+
+- Arquitectura
+
+- APIs
+
+- Base de datos
+
+- Flujo funcional
+
+- Despliegue3.4 Bitácora de Cambios
+
+Timeline de cambios con:
+
+- Tipo (Mejora, Bugfix)
+
+- Descripción
+
+- HU Jira
+
+- PR DevOps
+
+- Autor
+
+- Ambiente
+
+- Versión
+
+- Comentarios y adjuntos
+
+3.5 Integraciones
+
+Registro de enlaces externos como Jira y PR con estado y descripción.
+
+3.6 Comentarios
+
+Sistema de conversación técnica asociado a cambios y documentación.
+
+3.7 Adjuntos
+
+Repositorio de archivos relacionados: scripts, evidencias, imágenes.
+
+3.8 Administración
+
+Gestión de usuarios, roles, permisos y catálogos.
+
+4. Flujo de Uso
+
+1. Crear proyecto
+
+2. Documentar base técnica
+
+3. Registrar cambios en bitácora
+
+4. Vincular HU y PR
+
+5. Actualizar documentación
+
+6. Agregar comentarios y adjuntos
+
+5. Valor del Sistema
+
+- Centralización del conocimiento
+
+- Trazabilidad completa
+
+- Auditoría técnica
+
+- Mejor onboarding
+
+- Reducción de dependencia de p
+ 
