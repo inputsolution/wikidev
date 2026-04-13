@@ -46,11 +46,11 @@ const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     color: '#EAFDFF',
-    backgroundColor: '#003B44',
+    backgroundColor: '#024750',
     backgroundImage: `
-      radial-gradient(circle at 20% 0%, rgba(3, 149, 169, 0.45) 0%, transparent 55%),
-      radial-gradient(circle at 90% 100%, rgba(0, 20, 23, 0.85) 0%, transparent 60%),
-      linear-gradient(180deg, #00272D 0%, #003B44 50%, #00151A 100%)
+      radial-gradient(circle at 20% 0%, rgba(3, 149, 169, 0.5) 0%, transparent 58%),
+      radial-gradient(circle at 90% 100%, rgba(0, 30, 35, 0.7) 0%, transparent 62%),
+      linear-gradient(180deg, #023B44 0%, #024750 50%, #012F36 100%)
     `,
     borderRightWidth: '1px',
     borderRightStyle: 'solid',
