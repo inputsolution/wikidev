@@ -71,25 +71,12 @@ const useStyles = makeStyles({
       from: { transform: 'translate3d(0, 0, 0)' },
       to: { transform: 'translate3d(0, -50%, 0)' },
     },
-    animationDuration: '90s',
+    animationDuration: '45s',
     animationTimingFunction: 'linear',
     animationIterationCount: 'infinite',
     '@media (prefers-reduced-motion: reduce)': {
       animationName: 'none',
     },
-  },
-  cursorLine: {
-    position: 'absolute',
-    left: '56px',
-    bottom: '80px',
-    fontFamily: MONO_STACK,
-    fontSize: '12px',
-    color: 'rgba(189, 241, 248, 0.45)',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '2px',
-    zIndex: 0,
   },
   cursor: {
     display: 'inline-block',
@@ -181,36 +168,70 @@ const useStyles = makeStyles({
   },
   commitCard: {
     marginTop: '8px',
-    padding: '16px 18px',
     borderRadius: '10px',
-    border: '1px solid rgba(189, 241, 248, 0.18)',
-    backgroundColor: 'rgba(0, 20, 23, 0.55)',
+    border: '1px solid rgba(189, 241, 248, 0.2)',
+    backgroundColor: 'rgba(0, 20, 23, 0.72)',
     backdropFilter: 'blur(6px)',
     WebkitBackdropFilter: 'blur(6px)',
     fontFamily: MONO_STACK,
     fontSize: '12px',
-    lineHeight: 1.7,
-    maxWidth: '440px',
-    boxShadow: '0 12px 32px rgba(0, 0, 0, 0.35)',
+    lineHeight: 1.75,
+    maxWidth: '460px',
+    boxShadow: '0 16px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.02)',
+    overflow: 'hidden',
   },
-  commitCardHeader: {
+  terminalHeader: {
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
-    marginBottom: '10px',
-    paddingBottom: '10px',
+    padding: '10px 14px',
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
     borderBottom: '1px solid rgba(189, 241, 248, 0.12)',
-    color: 'rgba(234, 253, 255, 0.75)',
-    fontSize: '11px',
-    letterSpacing: '0.04em',
-    textTransform: 'uppercase',
+    position: 'relative',
   },
-  dot: {
-    width: '8px',
-    height: '8px',
+  trafficRed: {
+    width: '11px',
+    height: '11px',
     borderRadius: '50%',
-    backgroundColor: '#7DDFEE',
-    boxShadow: '0 0 12px #7DDFEE',
+    backgroundColor: '#FF5F57',
+  },
+  trafficYellow: {
+    width: '11px',
+    height: '11px',
+    borderRadius: '50%',
+    backgroundColor: '#FEBC2E',
+  },
+  trafficGreen: {
+    width: '11px',
+    height: '11px',
+    borderRadius: '50%',
+    backgroundColor: '#28C840',
+  },
+  terminalTitle: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    textAlign: 'center',
+    fontSize: '11px',
+    color: 'rgba(234, 253, 255, 0.55)',
+    letterSpacing: '0.02em',
+    pointerEvents: 'none',
+  },
+  terminalBody: {
+    padding: '14px 18px 16px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '2px',
+  },
+  prompt: {
+    color: '#7DDFEE',
+    fontWeight: 600,
+  },
+  promptLine: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    marginTop: '4px',
   },
   commitHash: {
     color: '#7DDFEE',
@@ -440,11 +461,6 @@ export function LoginPage() {
             {CODE_BACKDROP}
           </div>
         </div>
-        <div className={styles.cursorLine} aria-hidden>
-          <span>$&nbsp;</span>
-          <span className={styles.cursor} />
-        </div>
-
         <div className={styles.brandContent}>
           <div className={styles.brandHeader}>
             <img src="/logo.png" alt="wiki DEV" className={styles.brandLogo} />
@@ -464,20 +480,32 @@ export function LoginPage() {
             </div>
 
             <div className={styles.commitCard}>
-              <div className={styles.commitCardHeader}>
-                <span className={styles.dot} />
-                <span>latest commit</span>
+              <div className={styles.terminalHeader}>
+                <span className={styles.trafficRed} />
+                <span className={styles.trafficYellow} />
+                <span className={styles.trafficGreen} />
+                <span className={styles.terminalTitle}>zsh — wiki-dev</span>
               </div>
-              <div>
-                <span className={styles.commitHash}>a3f9c2e</span>{' '}
-                <span>refactor(auth): migrate to MSAL provider</span>
+              <div className={styles.terminalBody}>
+                <div>
+                  <span className={styles.prompt}>$</span>{' '}
+                  <span>git log --oneline -1</span>
+                </div>
+                <div>
+                  <span className={styles.commitHash}>a3f9c2e</span>{' '}
+                  <span>refactor(auth): migrate to MSAL provider</span>
+                </div>
+                <div className={styles.meta}>
+                  <span className={styles.diffAdd}>+284</span>{' '}
+                  <span className={styles.diffRemove}>−127</span>
+                  {'  ·  '}12 files{'  ·  '}HU-1423{'  ·  '}PR #418
+                </div>
+                <div className={styles.meta}>branch: main → staging</div>
+                <div className={styles.promptLine}>
+                  <span className={styles.prompt}>$</span>
+                  <span className={styles.cursor} />
+                </div>
               </div>
-              <div className={styles.meta}>
-                <span className={styles.diffAdd}>+284</span>{' '}
-                <span className={styles.diffRemove}>−127</span>
-                {'  ·  '}12 files{'  ·  '}HU-1423{'  ·  '}PR #418
-              </div>
-              <div className={styles.meta}>branch: main → staging</div>
             </div>
           </div>
 
