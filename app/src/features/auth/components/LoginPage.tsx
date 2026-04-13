@@ -6,6 +6,7 @@ import {
   Input,
   MessageBar,
   MessageBarBody,
+  Spinner,
   makeStyles,
   tokens,
 } from '@fluentui/react-components'
@@ -625,10 +626,16 @@ export function LoginPage() {
               type="submit"
               size="large"
               disabled={isLoading || !email || !password}
-              icon={<ArrowRight20Regular />}
+              icon={
+                isLoading ? (
+                  <Spinner size="tiny" appearance="inverted" />
+                ) : (
+                  <ArrowRight20Regular />
+                )
+              }
               iconPosition="after"
             >
-              {isLoading ? 'Verificando…' : 'Acceder al portal'}
+              {isLoading ? 'Verificando credenciales…' : 'Acceder al portal'}
             </Button>
           </form>
 

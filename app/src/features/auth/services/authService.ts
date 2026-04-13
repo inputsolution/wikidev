@@ -28,7 +28,7 @@ const MOCK_USERS: Array<AuthUser & { password: string }> = [
 ]
 
 const STORAGE_KEY = 'wikidev.auth.user'
-const LATENCY_MS = 400
+const LATENCY_MS = 900
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
