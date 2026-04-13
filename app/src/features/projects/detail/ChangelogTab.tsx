@@ -17,7 +17,7 @@ import {
   Code20Regular,
   LinkSquare20Regular,
 } from '@fluentui/react-icons'
-import type { FC, ReactNode } from 'react'
+import { useState, type FC, type ReactNode } from 'react'
 import type { ChangeType, Project, ProjectChange } from '../types'
 import {
   mockAttachments,
@@ -25,6 +25,7 @@ import {
   mockDevOpsLinks,
   mockJiraLinks,
 } from '../mockData'
+import { NewChangeDrawer } from './NewChangeDrawer'
 
 const MONO =
   "'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace"
@@ -342,18 +343,30 @@ interface ChangelogTabProps {
 
 export const ChangelogTab: FC<ChangelogTabProps> = ({ project }) => {
   const styles = useStyles()
-  const changes = mockChanges[project.id] ?? mockChanges['p-001'] ?? []
+  const initialChanges =
+    mockChanges[project.id] ?? mockChanges['p-001'] ?? []
+  const [changes, setChanges] = useState<ProjectChange[]>(initialChanges)
+  const [drawerOpen, setDrawerOpen] = useState(false)
   const jira = mockJiraLinks[project.id] ?? mockJiraLinks['p-001'] ?? []
   const devops = mockDevOpsLinks[project.id] ?? mockDevOpsLinks['p-001'] ?? []
   const attachments = mockAttachments[project.id] ?? mockAttachments['p-001'] ?? []
   const grouped = groupByDate(changes)
+
+  const handleSave = (change: ProjectChange) => {
+    setChanges((prev) => [change, ...prev])
+  }
 
   return (
     <div className={styles.layout}>
       <div className={styles.main}>
         <div className={styles.sectionHead}>
           <span className={styles.sectionTitle}>Bitácora de cambios</span>
-          <Button appearance="primary" icon={<Add20Regular />} size="small">
+          <Button
+            appearance="primary"
+            icon={<Add20Regular />}
+            size="small"
+            onClick={() => setDrawerOpen(true)}
+          >
             Nuevo cambio
           </Button>
         </div>
@@ -491,6 +504,13 @@ export const ChangelogTab: FC<ChangelogTabProps> = ({ project }) => {
           </div>
         </div>
       </aside>
+
+      <NewChangeDrawer
+        open={drawerOpen}
+        project={project}
+        onClose={() => setDrawerOpen(false)}
+        onSave={handleSave}
+      />
     </div>
   )
 }
