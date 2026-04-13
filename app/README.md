@@ -26,11 +26,11 @@ Actualmente la autenticación usa un **mock service** en memoria (`src/features/
 
 ### Usuarios de prueba (mock)
 
-| Email                     | Contraseña  | Rol     |
-| ------------------------- | ----------- | ------- |
-| `admin@wikidev.local`     | `admin123`  | admin   |
-| `editor@wikidev.local`    | `editor123` | editor  |
-| `reader@wikidev.local`    | `reader123` | reader  |
+| Email                          | Contraseña  | Rol     |
+| ------------------------------ | ----------- | ------- |
+| `jeheredia@bancoademi.com.do`  | `admin123`  | admin   |
+| `editor@wikidev.local`         | `editor123` | editor  |
+| `reader@wikidev.local`         | `reader123` | reader  |
 
 > Estas credenciales existen únicamente para desarrollo local. Antes de desplegar a cualquier ambiente real, el `authService` debe apuntarse al backend corporativo y eliminar el array `MOCK_USERS`.
 

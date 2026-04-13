@@ -3,11 +3,11 @@ import type { AuthUser, LoginCredentials } from '../types'
 const MOCK_USERS: Array<AuthUser & { password: string }> = [
   {
     id: 'u-001',
-    email: 'admin@wikidev.local',
+    email: 'jeheredia@bancoademi.com.do',
     password: 'admin123',
-    displayName: 'Ana Admin',
+    displayName: 'jeheredia',
     role: 'admin',
-    initials: 'AA',
+    initials: 'JH',
   },
   {
     id: 'u-002',
