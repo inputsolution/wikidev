@@ -11,7 +11,7 @@ import {
   tokens,
 } from '@fluentui/react-components'
 import {
-  Mail20Regular,
+  Person20Regular,
   LockClosed20Regular,
   Eye20Regular,
   EyeOff20Regular,
@@ -472,7 +472,7 @@ export function LoginPage() {
   const { login, status, error } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const [email, setEmail] = useState('jeheredia@bancoademi.com.do')
+  const [username, setUsername] = useState('jeheredia')
   const [password, setPassword] = useState('admin123')
   const [showPassword, setShowPassword] = useState(false)
   const terminal = useTerminalTyping(TERMINAL_STEPS)
@@ -480,10 +480,15 @@ export function LoginPage() {
   const from = (location.state as { from?: { pathname: string } } | null)?.from?.pathname ?? '/'
   const isLoading = status === 'loading'
 
+  const resolveEmail = (value: string): string => {
+    const v = value.trim()
+    return v.includes('@') ? v : `${v}@bancoademi.com.do`
+  }
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     try {
-      await login({ email, password })
+      await login({ email: resolveEmail(username), password })
       navigate(from, { replace: true })
     } catch {
       // error expuesto vía contexto
@@ -581,16 +586,16 @@ export function LoginPage() {
           )}
 
           <form className={styles.form} onSubmit={handleSubmit} noValidate>
-            <Field className={styles.field} label="Correo corporativo" required>
+            <Field className={styles.field} label="Usuario" required>
               <Input
                 className={styles.input}
-                type="email"
-                value={email}
-                onChange={(_, d) => setEmail(d.value)}
-                placeholder="usuario@bancoademi.com.do"
-                autoComplete="email"
+                type="text"
+                value={username}
+                onChange={(_, d) => setUsername(d.value)}
+                placeholder="jeheredia"
+                autoComplete="username"
                 disabled={isLoading}
-                contentBefore={<Mail20Regular />}
+                contentBefore={<Person20Regular />}
                 required
               />
             </Field>
@@ -625,7 +630,7 @@ export function LoginPage() {
               appearance="primary"
               type="submit"
               size="large"
-              disabled={isLoading || !email || !password}
+              disabled={isLoading || !username || !password}
               icon={
                 isLoading ? (
                   <Spinner size="tiny" appearance="inverted" />
