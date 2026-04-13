@@ -18,6 +18,8 @@ import { ChevronLeft20Regular } from '@fluentui/react-icons'
 import { mockProjects } from './mockData'
 import type { ProjectStatus } from './types'
 import { ChangelogTab } from './detail/ChangelogTab'
+import { UserStoriesTab } from './detail/UserStoriesTab'
+import { PullRequestsTab } from './detail/PullRequestsTab'
 
 const MONO =
   "'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace"
@@ -199,7 +201,9 @@ export function ProjectDetailPage() {
       </TabList>
 
       {selected === 'bitacora' && <ChangelogTab project={project} />}
-      {selected !== 'bitacora' && (
+      {selected === 'hu' && <UserStoriesTab project={project} />}
+      {selected === 'pr' && <PullRequestsTab project={project} />}
+      {selected !== 'bitacora' && selected !== 'hu' && selected !== 'pr' && (
         <div className={styles.placeholder}>
           Pestaña <strong>{selected}</strong> pendiente de implementar.
         </div>
