@@ -33,3 +33,6 @@ lerna-debug.log*
 # TS / Vite cache
 *.tsbuildinfo
 .vite/
+
+# Claude local memory (never commit)
+CLAUDE.md
