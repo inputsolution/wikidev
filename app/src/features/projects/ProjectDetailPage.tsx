@@ -21,6 +21,7 @@ import { ChangelogTab } from './detail/ChangelogTab'
 import { UserStoriesTab } from './detail/UserStoriesTab'
 import { PullRequestsTab } from './detail/PullRequestsTab'
 import { SummaryTab } from './detail/SummaryTab'
+import { AttachmentsTab } from './detail/AttachmentsTab'
 
 const MONO =
   "'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace"
@@ -205,10 +206,12 @@ export function ProjectDetailPage() {
       {selected === 'bitacora' && <ChangelogTab project={project} />}
       {selected === 'hu' && <UserStoriesTab project={project} />}
       {selected === 'pr' && <PullRequestsTab project={project} />}
+      {selected === 'adjuntos' && <AttachmentsTab project={project} />}
       {selected !== 'resumen' &&
         selected !== 'bitacora' &&
         selected !== 'hu' &&
-        selected !== 'pr' && (
+        selected !== 'pr' &&
+        selected !== 'adjuntos' && (
           <div className={styles.placeholder}>
             Pestaña <strong>{selected}</strong> pendiente de implementar.
           </div>
