@@ -169,9 +169,62 @@ export const mockDevOpsLinks: Record<string, DevOpsLink[]> = {
 
 export const mockAttachments: Record<string, Attachment[]> = {
   'p-001': [
-    { id: 'a-1', name: 'script_validacion.sql', size: '24 KB', uploadedAt: '12/04/2026' },
-    { id: 'a-2', name: 'Pruebas_QA.png', size: '318 KB', uploadedAt: '12/04/2026' },
-    { id: 'a-3', name: 'diagrama-flujo.pdf', size: '1.2 MB', uploadedAt: '10/04/2026' },
+    {
+      id: 'a-1',
+      name: 'script_validacion_direccion.sql',
+      size: '24 KB',
+      uploadedAt: '12/04/2026',
+      uploadedBy: { id: 'u-101', name: 'María P.', initials: 'MP' },
+    },
+    {
+      id: 'a-2',
+      name: 'Pruebas_QA_HU-120.png',
+      size: '318 KB',
+      uploadedAt: '12/04/2026',
+      uploadedBy: { id: 'u-102', name: 'Carlos R.', initials: 'CR' },
+    },
+    {
+      id: 'a-3',
+      name: 'diagrama-flujo-solicitudes.pdf',
+      size: '1.2 MB',
+      uploadedAt: '10/04/2026',
+      uploadedBy: { id: 'u-101', name: 'María P.', initials: 'MP' },
+    },
+    {
+      id: 'a-4',
+      name: 'plan_pruebas.xlsx',
+      size: '88 KB',
+      uploadedAt: '08/04/2026',
+      uploadedBy: { id: 'u-103', name: 'Ana G.', initials: 'AG' },
+    },
+    {
+      id: 'a-5',
+      name: 'postman_collection.json',
+      size: '12 KB',
+      uploadedAt: '06/04/2026',
+      uploadedBy: { id: 'u-101', name: 'María P.', initials: 'MP' },
+    },
+    {
+      id: 'a-6',
+      name: 'arquitectura_scoring.drawio',
+      size: '44 KB',
+      uploadedAt: '05/04/2026',
+      uploadedBy: { id: 'u-102', name: 'Carlos R.', initials: 'CR' },
+    },
+    {
+      id: 'a-7',
+      name: 'logs_error_ora01403.txt',
+      size: '6 KB',
+      uploadedAt: '04/04/2026',
+      uploadedBy: { id: 'u-103', name: 'Ana G.', initials: 'AG' },
+    },
+    {
+      id: 'a-8',
+      name: 'mockup_pantalla_resultado.png',
+      size: '512 KB',
+      uploadedAt: '01/04/2026',
+      uploadedBy: { id: 'u-105', name: 'Luisa F.', initials: 'LF' },
+    },
   ],
 }
 

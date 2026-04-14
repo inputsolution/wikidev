@@ -99,6 +99,7 @@ export interface Attachment {
   name: string
   size: string
   uploadedAt: string
+  uploadedBy?: ProjectMember
 }
 
 export interface ChangeComment {
