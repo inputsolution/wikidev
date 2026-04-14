@@ -28,7 +28,7 @@ Actualmente la autenticación usa un **mock service** en memoria (`src/features/
 
 | Email                          | Contraseña  | Rol     |
 | ------------------------------ | ----------- | ------- |
-| `jeheredia@bancoademi.com.do`  | `admin123`  | admin   |
+| `ANDEJESUS@bancoademi.com.do`  | `admin123`  | admin   |
 | `editor@wikidev.local`         | `editor123` | editor  |
 | `reader@wikidev.local`         | `reader123` | reader  |
 

@@ -504,7 +504,7 @@ export function LoginPage() {
   const { login, status, error } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const [username, setUsername] = useState('jeheredia')
+  const [username, setUsername] = useState('ANDEJESUS')
   const [password, setPassword] = useState('admin123')
   const [showPassword, setShowPassword] = useState(false)
   const [succeeded, setSucceeded] = useState(false)
@@ -628,7 +628,7 @@ export function LoginPage() {
                 type="text"
                 value={username}
                 onChange={(_, d) => setUsername(d.value)}
-                placeholder="jeheredia"
+                placeholder="ANDEJESUS"
                 autoComplete="username"
                 disabled={isLoading}
                 contentBefore={<Person20Regular />}
