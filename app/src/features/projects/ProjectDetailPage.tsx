@@ -20,6 +20,7 @@ import type { ProjectStatus } from './types'
 import { ChangelogTab } from './detail/ChangelogTab'
 import { UserStoriesTab } from './detail/UserStoriesTab'
 import { PullRequestsTab } from './detail/PullRequestsTab'
+import { SummaryTab } from './detail/SummaryTab'
 
 const MONO =
   "'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace"
@@ -126,7 +127,7 @@ function statusBadge(
 export function ProjectDetailPage() {
   const styles = useStyles()
   const { projectId } = useParams<{ projectId: string }>()
-  const [selected, setSelected] = useState<TabKey>('bitacora')
+  const [selected, setSelected] = useState<TabKey>('resumen')
 
   const project = mockProjects.find((p) => p.id === projectId)
   if (!project) return <Navigate to="/proyectos" replace />
@@ -200,14 +201,18 @@ export function ProjectDetailPage() {
         <Tab value="adjuntos">Adjuntos</Tab>
       </TabList>
 
+      {selected === 'resumen' && <SummaryTab project={project} />}
       {selected === 'bitacora' && <ChangelogTab project={project} />}
       {selected === 'hu' && <UserStoriesTab project={project} />}
       {selected === 'pr' && <PullRequestsTab project={project} />}
-      {selected !== 'bitacora' && selected !== 'hu' && selected !== 'pr' && (
-        <div className={styles.placeholder}>
-          Pestaña <strong>{selected}</strong> pendiente de implementar.
-        </div>
-      )}
+      {selected !== 'resumen' &&
+        selected !== 'bitacora' &&
+        selected !== 'hu' &&
+        selected !== 'pr' && (
+          <div className={styles.placeholder}>
+            Pestaña <strong>{selected}</strong> pendiente de implementar.
+          </div>
+        )}
     </>
   )
 }
