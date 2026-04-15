@@ -322,10 +322,18 @@ export function DocumentationPage() {
   const [newDialogOpen, setNewDialogOpen] = useState(false)
   const [newDraft, setNewDraft] = useState<NewSectionDraft>(emptyNewSectionDraft)
 
-  const projectSections = useMemo(
-    () => sections.filter((s) => s.projectId === selectedProjectId),
-    [sections, selectedProjectId],
-  )
+  const projectSections = useMemo(() => {
+    const filtered = sections.filter((s) => s.projectId === selectedProjectId)
+    const kindOrder = new Map<string, number>(
+      DEFAULT_SECTION_KINDS.map((k, i) => [k, i]),
+    )
+    return [...filtered].sort((a, b) => {
+      const ai = kindOrder.get(a.kind) ?? 999
+      const bi = kindOrder.get(b.kind) ?? 999
+      if (ai !== bi) return ai - bi
+      return a.title.localeCompare(b.title)
+    })
+  }, [sections, selectedProjectId])
 
   useEffect(() => {
     if (projectSections.length === 0) {

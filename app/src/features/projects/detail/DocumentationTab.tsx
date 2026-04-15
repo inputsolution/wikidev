@@ -303,10 +303,18 @@ export const DocumentationTab: FC<DocumentationTabProps> = ({ project }) => {
   const [newDialogOpen, setNewDialogOpen] = useState(false)
   const [newDraft, setNewDraft] = useState<NewSectionDraft>(emptyNewSectionDraft)
 
-  const projectSections = useMemo(
-    () => sections.filter((s) => s.projectId === project.id),
-    [sections, project.id],
-  )
+  const projectSections = useMemo(() => {
+    const filtered = sections.filter((s) => s.projectId === project.id)
+    const kindOrder = new Map<string, number>(
+      DEFAULT_SECTION_KINDS.map((k, i) => [k, i]),
+    )
+    return [...filtered].sort((a, b) => {
+      const ai = kindOrder.get(a.kind) ?? 999
+      const bi = kindOrder.get(b.kind) ?? 999
+      if (ai !== bi) return ai - bi
+      return a.title.localeCompare(b.title)
+    })
+  }, [sections, project.id])
 
   useEffect(() => {
     if (projectSections.length === 0) {

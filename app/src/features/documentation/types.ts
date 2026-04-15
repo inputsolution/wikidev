@@ -1,6 +1,14 @@
 import type { ProjectMember } from '@/features/projects/types'
 
-export type SectionKind = 'Arquitectura' | 'APIs' | 'Base de datos' | 'Flujo funcional' | 'Despliegue' | 'Custom'
+export type SectionKind =
+  | 'Arquitectura'
+  | 'Base de datos'
+  | 'APIs'
+  | 'Flujo funcional'
+  | 'Despliegue'
+  | 'Dependencias'
+  | 'Riesgos'
+  | 'Custom'
 
 export interface DocVersion {
   id: string
@@ -33,8 +41,10 @@ export const emptyNewSectionDraft: NewSectionDraft = {
 
 export const DEFAULT_SECTION_KINDS: SectionKind[] = [
   'Arquitectura',
-  'APIs',
   'Base de datos',
+  'APIs',
   'Flujo funcional',
   'Despliegue',
+  'Dependencias',
+  'Riesgos',
 ]
