@@ -135,6 +135,10 @@ export const mockChanges: Record<string, ProjectChange[]> = {
       author: { id: 'u-103', name: 'Diego G.', initials: 'DG' },
       environment: 'DEV',
       version: '1.5.1',
+      comment: {
+        author: { id: 'u-101', name: 'María P.', initials: 'MP' },
+        text: 'Revisado. Queda pendiente agregar un test de regresión para el caso sin registros.',
+      },
     },
     {
       id: 'c-003',
@@ -147,6 +151,10 @@ export const mockChanges: Record<string, ProjectChange[]> = {
       author: { id: 'u-101', name: 'María P.', initials: 'MP' },
       environment: 'DEV',
       version: '1.5.0',
+      comment: {
+        author: { id: 'u-104', name: 'Jorge V.', initials: 'JV' },
+        text: 'Me preocupan los tiempos cuando la cola está vacía. Agregar métricas con Application Insights.',
+      },
     },
   ],
   'p-002': [
@@ -191,6 +199,10 @@ export const mockChanges: Record<string, ProjectChange[]> = {
       author: { id: 'u-105', name: 'Luisa F.', initials: 'LF' },
       environment: 'UAT',
       version: '2.3.5',
+      comment: {
+        author: { id: 'u-102', name: 'Carlos R.', initials: 'CR' },
+        text: 'Validado en UAT con el equipo de producto. Listo para PROD después del freeze.',
+      },
     },
   ],
   'p-003': [
@@ -206,6 +218,10 @@ export const mockChanges: Record<string, ProjectChange[]> = {
       author: { id: 'u-103', name: 'Ana G.', initials: 'AG' },
       environment: 'PROD',
       version: '4.1.2',
+      comment: {
+        author: { id: 'u-106', name: 'Ricardo M.', initials: 'RM' },
+        text: 'Importante: revisar si aplica el mismo fix al flujo batch nocturno.',
+      },
     },
     {
       id: 'c-202',
@@ -234,6 +250,10 @@ export const mockChanges: Record<string, ProjectChange[]> = {
       author: { id: 'u-105', name: 'Luisa F.', initials: 'LF' },
       environment: 'DEV',
       version: '3.2.1',
+      comment: {
+        author: { id: 'u-102', name: 'Carlos R.', initials: 'CR' },
+        text: 'Excelente. Sugiero referenciar la HU-211 (MSAL) para que quede claro el ciclo completo.',
+      },
     },
     {
       id: 'c-302',
@@ -261,6 +281,10 @@ export const mockChanges: Record<string, ProjectChange[]> = {
       author: { id: 'u-106', name: 'Ricardo M.', initials: 'RM' },
       environment: 'UAT',
       version: '8.7.0',
+      comment: {
+        author: { id: 'u-103', name: 'Ana G.', initials: 'AG' },
+        text: 'Rollback plan documentado en el adjunto db2_migration_plan.pdf. Aprobado para PROD.',
+      },
     },
   ],
 }
