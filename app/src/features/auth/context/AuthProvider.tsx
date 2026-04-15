@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { authService } from '../services/authService'
 import type { AuthState, AuthUser, LoginCredentials } from '../types'
@@ -8,19 +8,16 @@ interface AuthProviderProps {
   children: ReactNode
 }
 
-export function AuthProvider({ children }: AuthProviderProps) {
-  const [state, setState] = useState<AuthState>({
-    user: null,
-    status: 'idle',
-    error: null,
-  })
+function readInitialState(): AuthState {
+  const restored = authService.restore()
+  if (restored) {
+    return { user: restored, status: 'authenticated', error: null }
+  }
+  return { user: null, status: 'idle', error: null }
+}
 
-  useEffect(() => {
-    const restored = authService.restore()
-    if (restored) {
-      setState({ user: restored, status: 'authenticated', error: null })
-    }
-  }, [])
+export function AuthProvider({ children }: AuthProviderProps) {
+  const [state, setState] = useState<AuthState>(readInitialState)
 
   const login = useCallback(async (credentials: LoginCredentials): Promise<AuthUser> => {
     setState((s) => ({ ...s, status: 'loading', error: null }))
