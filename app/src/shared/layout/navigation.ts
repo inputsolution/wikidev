@@ -17,6 +17,8 @@ import {
   Attach20Filled,
   Settings20Regular,
   Settings20Filled,
+  Warning20Regular,
+  Warning20Filled,
   bundleIcon,
   type FluentIcon,
 } from '@fluentui/react-icons'
@@ -33,6 +35,7 @@ const Dashboard = bundleIcon(Board20Filled, Board20Regular)
 const Projects = bundleIcon(FolderOpen20Filled, FolderOpen20Regular)
 const Docs = bundleIcon(DocumentText20Filled, DocumentText20Regular)
 const Changelog = bundleIcon(History20Filled, History20Regular)
+const Incidents = bundleIcon(Warning20Filled, Warning20Regular)
 const Integrations = bundleIcon(Link20Filled, Link20Regular)
 const Comments = bundleIcon(Comment20Filled, Comment20Regular)
 const Attachments = bundleIcon(Attach20Filled, Attach20Regular)
@@ -43,6 +46,12 @@ export const navItems: NavItem[] = [
   { key: 'projects', label: 'Proyectos', path: '/proyectos', icon: Projects },
   { key: 'documentation', label: 'Documentación', path: '/documentacion', icon: Docs },
   { key: 'changelog', label: 'Bitácora', path: '/bitacora', icon: Changelog },
+  {
+    key: 'incidents',
+    label: 'Incidencias / Soluciones',
+    path: '/incidencias',
+    icon: Incidents,
+  },
   { key: 'integrations', label: 'Integraciones', path: '/integraciones', icon: Integrations },
   { key: 'comments', label: 'Comentarios', path: '/comentarios', icon: Comments },
   { key: 'attachments', label: 'Adjuntos', path: '/adjuntos', icon: Attachments },

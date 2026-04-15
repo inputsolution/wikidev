@@ -9,6 +9,7 @@ import { ProjectsPage } from '@/features/projects/ProjectsPage'
 import { ProjectDetailPage } from '@/features/projects/ProjectDetailPage'
 import { DocumentationPage } from '@/features/documentation/DocumentationPage'
 import { ChangelogPage } from '@/features/changelog/ChangelogPage'
+import { IncidentsPage } from '@/features/incidents/IncidentsPage'
 import { IntegrationsPage } from '@/features/integrations/IntegrationsPage'
 import { CommentsPage } from '@/features/comments/CommentsPage'
 import { AttachmentsPage } from '@/features/attachments/AttachmentsPage'
@@ -29,6 +30,7 @@ export const router = createBrowserRouter([
       { path: 'proyectos/:projectId', element: <ProjectDetailPage /> },
       { path: 'documentacion', element: <DocumentationPage /> },
       { path: 'bitacora', element: <ChangelogPage /> },
+      { path: 'incidencias', element: <IncidentsPage /> },
       { path: 'integraciones', element: <IntegrationsPage /> },
       { path: 'comentarios', element: <CommentsPage /> },
       { path: 'adjuntos', element: <AttachmentsPage /> },
