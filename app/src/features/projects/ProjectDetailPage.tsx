@@ -22,6 +22,7 @@ import { UserStoriesTab } from './detail/UserStoriesTab'
 import { PullRequestsTab } from './detail/PullRequestsTab'
 import { SummaryTab } from './detail/SummaryTab'
 import { AttachmentsTab } from './detail/AttachmentsTab'
+import { DocumentationTab } from './detail/DocumentationTab'
 
 const MONO =
   "'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace"
@@ -203,19 +204,11 @@ export function ProjectDetailPage() {
       </TabList>
 
       {selected === 'resumen' && <SummaryTab project={project} />}
+      {selected === 'documentacion' && <DocumentationTab project={project} />}
       {selected === 'bitacora' && <ChangelogTab project={project} />}
       {selected === 'hu' && <UserStoriesTab project={project} />}
       {selected === 'pr' && <PullRequestsTab project={project} />}
       {selected === 'adjuntos' && <AttachmentsTab project={project} />}
-      {selected !== 'resumen' &&
-        selected !== 'bitacora' &&
-        selected !== 'hu' &&
-        selected !== 'pr' &&
-        selected !== 'adjuntos' && (
-          <div className={styles.placeholder}>
-            Pestaña <strong>{selected}</strong> pendiente de implementar.
-          </div>
-        )}
     </>
   )
 }
