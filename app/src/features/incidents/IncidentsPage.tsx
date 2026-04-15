@@ -71,19 +71,6 @@ function statusColor(
   }
 }
 
-function severityAccent(s: IncidentSeverity): string {
-  switch (s) {
-    case 'Crítica':
-      return '#E11D48'
-    case 'Alta':
-      return '#D97706'
-    case 'Media':
-      return '#0395A9'
-    case 'Baja':
-      return '#64748B'
-  }
-}
-
 const useStyles = makeStyles({
   stats: {
     display: 'grid',
@@ -142,12 +129,11 @@ const useStyles = makeStyles({
     gap: '14px',
   },
   card: {
-    position: 'relative',
     backgroundColor: tokens.colorNeutralBackground1,
     borderTopWidth: '1px',
     borderRightWidth: '1px',
     borderBottomWidth: '1px',
-    borderLeftWidth: '4px',
+    borderLeftWidth: '1px',
     borderTopStyle: 'solid',
     borderRightStyle: 'solid',
     borderBottomStyle: 'solid',
@@ -155,20 +141,22 @@ const useStyles = makeStyles({
     borderTopColor: tokens.colorNeutralStroke2,
     borderRightColor: tokens.colorNeutralStroke2,
     borderBottomColor: tokens.colorNeutralStroke2,
-    borderRadius: '10px',
-    padding: '16px 18px',
+    borderLeftColor: tokens.colorNeutralStroke2,
+    borderRadius: '12px',
+    padding: '20px',
     display: 'flex',
     flexDirection: 'column',
-    gap: '10px',
+    gap: '14px',
     cursor: 'pointer',
     textAlign: 'left',
-    transition: 'border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease',
+    transition: 'transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease',
     ':hover': {
+      transform: 'translateY(-2px)',
+      boxShadow: '0 6px 18px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04)',
       borderTopColor: tokens.colorBrandStroke2,
       borderRightColor: tokens.colorBrandStroke2,
       borderBottomColor: tokens.colorBrandStroke2,
-      boxShadow: '0 3px 12px rgba(15, 23, 42, 0.05)',
-      transform: 'translateY(-1px)',
+      borderLeftColor: tokens.colorBrandStroke2,
     },
   },
   cardHead: {
@@ -554,7 +542,6 @@ export function IncidentsPage() {
                 key={inc.id}
                 type="button"
                 className={styles.card}
-                style={{ borderLeftColor: severityAccent(inc.severity) }}
                 onClick={() => setSelectedId(inc.id)}
               >
                 <div className={styles.cardHead}>
