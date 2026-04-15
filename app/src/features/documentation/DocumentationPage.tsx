@@ -38,6 +38,7 @@ import {
   History20Regular,
 } from '@fluentui/react-icons'
 import { PageHeader } from '@/shared/components/PageHeader'
+import { MarkdownContent } from '@/shared/components/MarkdownContent'
 import { mockProjects } from '@/features/projects/mockData'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import type { ProjectMember } from '@/features/projects/types'
@@ -668,7 +669,7 @@ export function DocumentationPage() {
                   </Field>
                 </div>
               ) : (
-                <pre className={styles.contentPre}>{activeVersion.content}</pre>
+                <MarkdownContent content={activeVersion.content} />
               )}
             </div>
 

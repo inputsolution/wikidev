@@ -37,6 +37,7 @@ import {
   History20Regular,
 } from '@fluentui/react-icons'
 import { useAuth } from '@/features/auth/hooks/useAuth'
+import { MarkdownContent } from '@/shared/components/MarkdownContent'
 import { mockDocSections } from '@/features/documentation/mockData'
 import {
   DEFAULT_SECTION_KINDS,
@@ -613,7 +614,7 @@ export const DocumentationTab: FC<DocumentationTabProps> = ({ project }) => {
                   </Field>
                 </div>
               ) : (
-                <pre className={styles.contentPre}>{activeVersion.content}</pre>
+                <MarkdownContent content={activeVersion.content} />
               )}
             </div>
 
